@@ -1,0 +1,35 @@
+AllCops:
+  TargetRubyVersion: 2.3
+  TargetRailsVersion: 5.1
+  Exclude:
+    - 'Rakefile'
+
+Rails:
+  Enabled: true
+
+# Don't enforce documentation
+Style/Documentation:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 190
+
+Style/WordArray:
+  Enabled: false
+
+Style/SymbolArray:
+  Enabled: false
+
+Style/RegexpLiteral:
+  Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'test/**/*'
+
+Metrics/ClassLength:
+  Exclude:
+    - 'test/**/*'
