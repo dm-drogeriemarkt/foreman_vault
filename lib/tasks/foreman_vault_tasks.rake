@@ -38,6 +38,5 @@ end
 Rake::Task[:test].enhance ['test:foreman_vault']
 
 load 'tasks/jenkins.rake'
-if Rake::Task.task_defined?(:'jenkins:unit')
-  Rake::Task['jenkins:unit'].enhance ['test:foreman_vault', 'foreman_vault:rubocop']
-end
+
+Rake::Task['jenkins:unit'].enhance ['test:foreman_vault', 'foreman_vault:rubocop'] if Rake::Task.task_defined?(:'jenkins:unit')

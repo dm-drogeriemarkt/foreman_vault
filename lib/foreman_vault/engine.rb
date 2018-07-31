@@ -7,6 +7,7 @@ module ForemanVault
     config.autoload_paths += Dir["#{config.root}/app/controllers"]
     config.autoload_paths += Dir["#{config.root}/app/helpers"]
     config.autoload_paths += Dir["#{config.root}/app/models"]
+    config.autoload_paths += Dir["#{config.root}/app/services"]
 
     # Add any db migrations
     initializer 'foreman_vault.load_app_instance_data' do |app|
@@ -18,6 +19,19 @@ module ForemanVault
     initializer 'foreman_vault.register_plugin', before: :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_vault do
         requires_foreman '>= 1.20'
+
+        # Add permissions
+        security_block :foreman_vault do
+          permission :view_vault_connections,     { vault_connections: [:index] },         resource_type: 'VaultConnection'
+          permission :create_vault_connections,   { vault_connections: [:new, :create] },  resource_type: 'VaultConnection'
+          permission :edit_vault_connections,     { vault_connections: [:edit, :update] }, resource_type: 'VaultConnection'
+          permission :destroy_vault_connections,  { vault_connections: [:destroy] },       resource_type: 'VaultConnection'
+        end
+
+        # add menu entry
+        menu :top_menu, :vault_connections, url_hash: { controller: :vault_connections, action: :index },
+                                            caption: N_('Vault connections'),
+                                            parent: :infrastructure_menu
       end
     end
 

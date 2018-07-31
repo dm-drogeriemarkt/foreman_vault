@@ -1,0 +1,35 @@
+language: ruby
+rvm:
+  - 2.3
+install:
+  - unset BUNDLE_GEMFILE
+  - cd ..
+  - git clone ${FOREMAN_REPOSITORY} -b ${FOREMAN_BRANCH} --depth 1
+  - cd ${FOREMAN_PLUGIN_NAME}
+  - bundle install --jobs=3 --retry=3
+  - npm install eslint
+  - cd ../foreman
+  - echo "gemspec :path => '../${FOREMAN_PLUGIN_NAME}'" > bundler.d/${FOREMAN_PLUGIN_NAME}.local.rb
+  - ln -s settings.yaml.test config/settings.yaml
+  - ln -s database.yml.example config/database.yml
+  - bundle install --jobs=3 --retry=3 --without journald development postgresql mysql2 console journald
+  - bundle exec rake db:migrate RAILS_ENV=test
+script:
+  - cd ../${FOREMAN_PLUGIN_NAME}
+  - bundle exec rubocop
+  - cd ../foreman
+  - bundle exec rake test:${FOREMAN_PLUGIN_NAME}
+env:
+  global:
+    - TESTOPTS=-v
+    - FOREMAN_PLUGIN_NAME=foreman_vault
+  matrix:
+    - FOREMAN_REPOSITORY=https://github.com/theforeman/foreman.git FOREMAN_BRANCH=develop
+addons:
+  apt:
+    packages:
+    - nodejs
+    - git
+    - libsqlite3-dev
+    - zlib1g-dev
+    - libvirt-dev
