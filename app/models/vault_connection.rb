@@ -1,32 +1,34 @@
 # frozen_string_literal: true
 
+require 'vault'
+
 class VaultConnection < ApplicationRecord
   include Authorizable
 
   validates :name, presence: true, uniqueness: true
   validates :url, :token, presence: true
 
-  before_create :set_expires_at
-  before_update :update_expires_at
+  before_create :set_expire_time
+  before_update :update_expire_time
 
   def token_valid?
-    vault_status.nil? && expires_at && expires_at > Time.zone.now
+    vault_status.nil? && expire_time && expire_time > Time.zone.now
   end
 
   private
 
-  def set_expires_at
-    self.expires_at = client.token_expires_at
-  rescue ForemanVault::VaultClient::VaultClientError => e
+  def set_expire_time
+    self.expire_time = client.expire_time
+  rescue StandardError => e
     errors.add(:base, e.message)
     throw(:abort)
   end
 
-  def update_expires_at
-    self.expires_at = client.token_expires_at
+  def update_expire_time
+    self.expire_time = client.token_expires_at
     self.vault_status = nil
-  rescue ForemanVault::VaultClient::VaultClientError => e
-    self.expires_at = nil
+  rescue StandardError => e
+    self.expire_time = nil
     self.vault_status = e.message
   end
 

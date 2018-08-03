@@ -9,12 +9,17 @@ class VaultClientTest < ActiveSupport::TestCase
     @subject = ForemanVault::VaultClient.new(@url, @token)
   end
 
-  describe '#token_expires_at' do
+  describe '#expire_time' do
+    setup do
+      @time = '2018-08-01T20:08:55.525830559+02:00'
+      response = OpenStruct.new(data: { expire_time: @time })
+      auth_token = mock('auth_token', lookup: response)
+      client = mock('client', auth_token: auth_token)
+      Vault::Client.expects(:new).returns(client)
+    end
+
     test 'should return expire time' do
-      time = '2018-08-01T20:08:55.525830559+02:00'
-      response_body = "{\"data\":{\"expire_time\":\"#{time}\"}}"
-      stub_request(:post, "#{@url}/v1/auth/token/lookup").to_return(status: 200, body: response_body)
-      assert_equal Time.zone.parse(time), @subject.token_expires_at
+      assert_equal Time.zone.parse(@time), @subject.expire_time
     end
   end
 end

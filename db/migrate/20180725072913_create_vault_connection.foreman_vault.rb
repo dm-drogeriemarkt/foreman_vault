@@ -7,7 +7,7 @@ class CreateVaultConnection < ActiveRecord::Migration[5.1]
       t.string :url
       t.string :token
       t.string :vault_status
-      t.datetime :expires_at
+      t.datetime :expire_time
 
       t.timestamps
     end
