@@ -9,12 +9,21 @@ module ForemanVault
       @token = token
     end
 
-    def expire_time
+    def fetch_expire_time
       response = client.auth_token.lookup(token)
       Time.zone.parse(response.data[:expire_time])
     end
 
+    def fetch_secret(secret_path)
+      response = client.logical.read(secret_path)
+      raise NoDataError.new(N_('There is no available data for path: %s'), secret_path) unless response
+      response.data
+    end
+
     private
+
+    class VaultClientError < Foreman::Exception; end
+    class NoDataError < VaultClientError; end
 
     attr_reader :base_url, :token
 

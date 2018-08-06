@@ -11,6 +11,8 @@ class VaultConnection < ApplicationRecord
   before_create :set_expire_time
   before_update :update_expire_time
 
+  delegate :fetch_expire_time, :fetch_secret, to: :client
+
   def token_valid?
     vault_status.nil? && expire_time && expire_time > Time.zone.now
   end
@@ -18,14 +20,14 @@ class VaultConnection < ApplicationRecord
   private
 
   def set_expire_time
-    self.expire_time = client.expire_time
+    self.expire_time = fetch_expire_time
   rescue StandardError => e
     errors.add(:base, e.message)
     throw(:abort)
   end
 
   def update_expire_time
-    self.expire_time = client.token_expires_at
+    self.expire_time = fetch_expire_time
     self.vault_status = nil
   rescue StandardError => e
     self.expire_time = nil
