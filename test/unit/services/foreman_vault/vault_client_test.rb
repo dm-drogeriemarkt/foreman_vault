@@ -14,7 +14,7 @@ class VaultClientTest < ActiveSupport::TestCase
       @time = '2018-08-01T20:08:55.525830559+02:00'
       response = OpenStruct.new(data: { expire_time: @time })
       auth_token = mock
-      auth_token.expects(:lookup).once.with(@subject.instance_variable_get('@token')).returns(response)
+      auth_token.expects(:lookup_self).once.returns(response)
 
       @client.expects(:auth_token).once.returns(auth_token)
     end
