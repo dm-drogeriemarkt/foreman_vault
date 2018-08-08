@@ -13,9 +13,7 @@ class VaultClientTest < ActiveSupport::TestCase
     setup do
       @time = '2018-08-01T20:08:55.525830559+02:00'
       response = OpenStruct.new(data: { expire_time: @time })
-      auth_token = mock
-      auth_token.expects(:lookup_self).once.returns(response)
-
+      auth_token = mock.tap { |object| object.expects(:lookup_self).once.returns(response) }
       @client.expects(:auth_token).once.returns(auth_token)
     end
 
@@ -29,8 +27,7 @@ class VaultClientTest < ActiveSupport::TestCase
       @secret_path = '/kv/my-secret'
       @data = { foo: 'bar' }
       response = OpenStruct.new(data: @data)
-      logical = mock
-      logical.expects(:read).once.with(@secret_path).returns(response)
+      logical = mock.tap { |object| object.expects(:read).once.with(@secret_path).returns(response) }
 
       @client.expects(:logical).once.returns(logical)
     end
