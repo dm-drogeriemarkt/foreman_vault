@@ -13,7 +13,7 @@ class MacrosTest < ActiveSupport::TestCase
       template = OpenStruct.new(name: 'Test', template: 'Test')
       source = Foreman::Renderer::Source::Database.new(template)
 
-      vault_connection = FactoryBot.create(:vault_connection)
+      vault_connection = FactoryBot.create(:vault_connection, :without_callbacks)
       secret_path = '/kv/my-secret'
       response = OpenStruct.new(data: { foo: 'bar' })
       logical = mock.tap { |object| object.expects(:read).once.with(secret_path).returns(response) }
