@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'vault'
-
 class VaultConnection < ApplicationRecord
   include Authorizable
 
@@ -13,10 +11,25 @@ class VaultConnection < ApplicationRecord
   before_create :set_expire_time
   before_update :update_expire_time
 
+  scope :with_valid_token, -> { where(vault_error: nil).where('expire_time > ?', Time.zone.now) }
+
   delegate :fetch_expire_time, :fetch_secret, to: :client
 
   def token_valid?
-    vault_status.nil? && expire_time && expire_time > Time.zone.now
+    vault_error.nil? && expire_time && expire_time > Time.zone.now
+  end
+
+  def renew_token!
+    client.renew_token
+    save!
+  rescue StandardError => e
+    # rubocop:disable Rails/SkipsModelValidations
+    update_column(:vault_error, e.message)
+    # rubocop:enable Rails/SkipsModelValidations
+  end
+
+  def perform_renew_token
+    RefreshVaultToken.perform_later(id)
   end
 
   private
@@ -30,10 +43,10 @@ class VaultConnection < ApplicationRecord
 
   def update_expire_time
     self.expire_time = fetch_expire_time
-    self.vault_status = nil
+    self.vault_error = nil
   rescue StandardError => e
     self.expire_time = nil
-    self.vault_status = e.message
+    self.vault_error = e.message
   end
 
   def client

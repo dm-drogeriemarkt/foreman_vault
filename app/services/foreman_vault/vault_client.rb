@@ -20,6 +20,10 @@ module ForemanVault
       response.data
     end
 
+    def renew_token
+      client.auth_token.renew_self
+    end
+
     private
 
     class VaultClientError < Foreman::Exception; end

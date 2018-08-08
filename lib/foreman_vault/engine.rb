@@ -8,6 +8,7 @@ module ForemanVault
     config.autoload_paths += Dir["#{config.root}/app/models"]
     config.autoload_paths += Dir["#{config.root}/app/services"]
     config.autoload_paths += Dir["#{config.root}/app/lib"]
+    config.autoload_paths += Dir["#{config.root}/app/jobs"]
 
     # Add any db migrations
     initializer 'foreman_vault.load_app_instance_data' do |app|
@@ -52,6 +53,12 @@ module ForemanVault
       locale_dir = File.join(File.expand_path('../..', __dir__), 'locale')
       locale_domain = 'foreman_vault'
       Foreman::Gettext::Support.add_text_domain locale_domain, locale_dir
+    end
+
+    initializer 'foreman_vault.trigger_jobs', after: :load_config_initializers do |_app|
+      ::Foreman::Application.dynflow.config.on_init do |world|
+        RefreshVaultTokens.spawn_if_missing(world)
+      end
     end
   end
 end
