@@ -35,6 +35,15 @@ module ForemanVault
       end
     end
 
+    config.to_prepare do
+      begin
+        Foreman::Renderer::Scope::Base.include(ForemanVault::Macros)
+        Foreman::Renderer.configure { |c| c.allowed_generic_helpers += [:vault_secret] }
+      rescue StandardError => e
+        Rails.logger.warn "ForemanVault: skipping engine hook (#{e})"
+      end
+    end
+
     rake_tasks do
       Rake::Task['db:seed'].enhance do
         ForemanVault::Engine.load_seed

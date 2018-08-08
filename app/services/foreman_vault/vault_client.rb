@@ -10,7 +10,7 @@ module ForemanVault
     end
 
     def fetch_expire_time
-      response = client.auth_token.lookup(token)
+      response = client.auth_token.lookup_self
       Time.zone.parse(response.data[:expire_time])
     end
 
