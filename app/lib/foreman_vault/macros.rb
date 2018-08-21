@@ -3,8 +3,13 @@
 module ForemanVault
   module Macros
     def vault_secret(vault_connection_name, secret_path)
-      vault = VaultConnection.find_by(name: vault_connection_name)
-      vault.fetch_secret(secret_path) if vault&.token_valid?
+      vault = VaultConnection.find_by!(name: vault_connection_name)
+      raise VaultError.new(N_('Invalid token for %s'), vault.name) unless vault.token_valid?
+      vault.fetch_secret(secret_path)
+    rescue ActiveRecord::RecordNotFound => e
+      raise VaultError, e.message
     end
+
+    class VaultError < Foreman::Exception; end
   end
 end
