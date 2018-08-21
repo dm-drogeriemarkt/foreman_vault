@@ -9,8 +9,9 @@ module Api
       before_action :find_resource, only: [:show, :update, :destroy]
 
       api :GET, '/vault_connections/', N_('List VaultConnections')
+      param_group :search_and_pagination, ::Api::V2::BaseController
       def index
-        @vault_connections = resource_scope
+        @vault_connections = resource_scope_for_index
       end
 
       api :GET, '/vault_connections/:id', N_('Show VaultConnection details')
@@ -44,6 +45,13 @@ module Api
       param :id, :identifier, required: true
       def destroy
         process_response @vault_connection.destroy
+      end
+
+      private
+
+      # Overload this method to avoid using search_for method
+      def resource_scope_for_index(options = {})
+        resource_scope(options).paginate(paginate_options)
       end
     end
   end
