@@ -5,9 +5,9 @@ module ForemanVault
     engine_name 'foreman_vault'
 
     config.autoload_paths += Dir["#{config.root}/app/controllers"]
-    config.autoload_paths += Dir["#{config.root}/app/helpers"]
     config.autoload_paths += Dir["#{config.root}/app/models"]
     config.autoload_paths += Dir["#{config.root}/app/services"]
+    config.autoload_paths += Dir["#{config.root}/app/lib"]
 
     # Add any db migrations
     initializer 'foreman_vault.load_app_instance_data' do |app|
@@ -34,7 +34,7 @@ module ForemanVault
 
         # add menu entry
         menu :top_menu, :vault_connections, url_hash: { controller: :vault_connections, action: :index },
-                                            caption: N_('Vault connections'),
+                                            caption: N_('Vault Connections'),
                                             parent: :infrastructure_menu
       end
     end
@@ -45,12 +45,6 @@ module ForemanVault
         Foreman::Renderer.configure { |c| c.allowed_generic_helpers += [:vault_secret] }
       rescue StandardError => e
         Rails.logger.warn "ForemanVault: skipping engine hook (#{e})"
-      end
-    end
-
-    rake_tasks do
-      Rake::Task['db:seed'].enhance do
-        ForemanVault::Engine.load_seed
       end
     end
 
