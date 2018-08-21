@@ -22,10 +22,14 @@ module ForemanVault
 
         # Add permissions
         security_block :foreman_vault do
-          permission :view_vault_connections,     { vault_connections: [:index] },         resource_type: 'VaultConnection'
-          permission :create_vault_connections,   { vault_connections: [:new, :create] },  resource_type: 'VaultConnection'
-          permission :edit_vault_connections,     { vault_connections: [:edit, :update] }, resource_type: 'VaultConnection'
-          permission :destroy_vault_connections,  { vault_connections: [:destroy] },       resource_type: 'VaultConnection'
+          permission :view_vault_connections,     { vault_connections: [:index, :show],
+                                                    'api/v2/vault_connections': [:index, :show] }, resource_type: 'VaultConnection'
+          permission :create_vault_connections,   { vault_connections: [:new, :create],
+                                                    'api/v2/vault_connections': [:create] }, resource_type: 'VaultConnection'
+          permission :edit_vault_connections,     { vault_connections: [:edit, :update],
+                                                    'api/v2/vault_connections': [:update] }, resource_type: 'VaultConnection'
+          permission :destroy_vault_connections,  { vault_connections: [:destroy],
+                                                    'api/v2/vault_connections': [:destroy] }, resource_type: 'VaultConnection'
         end
 
         # add menu entry
