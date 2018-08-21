@@ -5,8 +5,10 @@ require 'vault'
 class VaultConnection < ApplicationRecord
   include Authorizable
 
+  validates_lengths_from_database
   validates :name, presence: true, uniqueness: true
   validates :url, :token, presence: true
+  validates :url, format: URI.regexp(['http', 'https'])
 
   before_create :set_expire_time
   before_update :update_expire_time
