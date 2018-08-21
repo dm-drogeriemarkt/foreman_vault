@@ -1,4 +1,4 @@
 :foreman_vault:
-  :refresh_token_hour: 1
-  :refresh_token_retry_wait: 1
-  :refresh_token_retry_attempts: 1
+  :refresh_tokens_wait_time: 30
+  :refresh_token_retry_wait: 5
+  :refresh_token_retry_attempts: 3

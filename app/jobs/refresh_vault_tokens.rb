@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class RefreshVaultTokens < ApplicationJob
-  def self.wait_until
-    Time.zone.tomorrow.midnight + (SETTINGS&.[](:foreman_vault)&.[](:refresh_token_hour) || 0).hours
+  def self.wait_time
+    (SETTINGS&.[](:foreman_vault)&.[](:refresh_tokens_wait_time) || 30).minutes
   end
 
   queue_as :vault_tokens_queue
 
   after_perform do
-    self.class.set(wait_until: self.class.wait_until).perform_later
+    self.class.set(wait: self.class.wait_time).perform_later
   end
 
   def perform
