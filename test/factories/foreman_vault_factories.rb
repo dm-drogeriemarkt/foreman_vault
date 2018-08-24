@@ -7,6 +7,10 @@ FactoryBot.define do
     token '16aa4f29-035d-b604-f3d3-8cd9a6a6921c'
     expire_time { Time.zone.now + 1.year }
 
+    trait :invalid do
+      expire_time nil
+    end
+
     trait :without_callbacks do
       after(:build) do |user|
         class << user
