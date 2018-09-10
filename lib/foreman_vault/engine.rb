@@ -21,6 +21,8 @@ module ForemanVault
       Foreman::Plugin.register :foreman_vault do
         requires_foreman '>= 1.20'
 
+        apipie_documented_controllers ["#{ForemanVault::Engine.root}/app/controllers/api/v2/*.rb"]
+
         # Add permissions
         security_block :foreman_vault do
           permission :view_vault_connections,     { vault_connections: [:index, :show],
