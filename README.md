@@ -7,6 +7,22 @@ This is a plugin for Foreman that adds support for using credentials from Hashic
 See [How_to_Install_a_Plugin](http://projects.theforeman.org/projects/foreman/wiki/How_to_Install_a_Plugin)
 for how to install Foreman plugins
 
+## Usage
+
+To set up a connection between Foreman and Vault first navigate to the "Infrastructure" > "Vault Connections" menu and then hit the button with label "Create Vault Connection". Now you should see a form. You have to fill in name, url and token and hit "Submit" button.
+
+You can now use `vault_secret(vault_connection_name, secret_path)` macro in your templates to fetch secrets from Vault, e.g.
+
+```
+<%= fetch_secret('MyVault', 'kv/my_secret') %>
+```
+
+As result you should get secret data, e.g.
+
+```
+{:foo=>"bar"}
+```
+
 ## Contributing
 
 Fork and send a Pull Request. Thanks!
