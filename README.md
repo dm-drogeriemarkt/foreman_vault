@@ -1,11 +1,12 @@
 # ForemanVault
 
+[<img src="https://opensourcelogos.aws.dmtech.cloud/dmTECH_opensource_logo.svg" height="21" width="130">](https://www.dmtech.de/)
+
 This is a plugin for Foreman that adds support for using credentials from Hashicorp Vault.
 
 ## Installation
 
-See [How_to_Install_a_Plugin](http://projects.theforeman.org/projects/foreman/wiki/How_to_Install_a_Plugin)
-for how to install Foreman plugins
+See [Plugins install instructions](https://theforeman.org/plugins/) for how to install Foreman plugins.
 
 ## Contributing
 
@@ -13,7 +14,7 @@ Fork and send a Pull Request. Thanks!
 
 ## Copyright
 
-Copyright (c) 2018 dm-drogerie markt GmbH & Co. KG https://dm.de
+Copyright (c) 2018 dmTECH GmbH, [dmtech.de](https://www.dmtech.de/)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
