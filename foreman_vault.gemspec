@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.license     = 'GPL-3.0'
   s.authors     = ['dmTECH GmbH']
   s.email       = ['opensource@dm.de']
-  s.homepage    = 'https://github.com/dm-drogeriemarkt-de/foreman_vault'
+  s.homepage    = 'https://github.com/dm-drogeriemarkt/foreman_vault'
   s.summary     = 'Adds support for using credentials from Hashicorp Vault'
 
   s.files = Dir['{app,config,db,lib,locale}/**/*'] + ['LICENSE', 'Rakefile', 'README.md']
