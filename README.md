@@ -9,12 +9,21 @@ for how to install Foreman plugins
 
 ## Usage
 
-To set up a connection between Foreman and Vault first navigate to the "Infrastructure" > "Vault Connections" menu and then hit the button with label "Create Vault Connection". Now you should see a form. You have to fill in name, url and token and hit "Submit" button.
-
-You can now use `vault_secret(vault_connection_name, secret_path)` macro in your templates to fetch secrets from Vault, e.g.
+Setup Vault "Dev" mode:
 
 ```
-<%= fetch_secret('MyVault', 'kv/my_secret') %>
+$ brew install vault
+$ vault server -dev
+$ export VAULT_ADDR='http://127.0.0.1:8200'
+$ vault secrets enable kv
+```
+
+To set up a connection between Foreman and Vault first navigate to the "Infrastructure" > "Vault Connections" menu and then hit the button labeled "Create Vault Connection". Now you should see a form. You have to fill in name, url and token(you can receive token with the `$ vault token create -period=60m` command) and hit "Submit" button.
+
+You can now use `vault_secret(vault_connection_name, secret_path)` macro in your templates to fetch secrets from Vault(you can write secrets with the `$ vault write kv/my_secret foo=bar` command), e.g.
+
+```
+<%= vault_secret('MyVault', 'kv/my_secret') %>
 ```
 
 As result you should get secret data, e.g.
