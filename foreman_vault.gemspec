@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name        = 'foreman_vault'
   s.version     = ForemanVault::VERSION
   s.license     = 'GPL-3.0'
-  s.authors     = ['dm-drogerie markt GmbH & Co. KG']
+  s.authors     = ['dmTECH GmbH']
   s.email       = ['opensource@dm.de']
   s.homepage    = 'https://github.com/dm-drogeriemarkt-de/foreman_vault'
   s.summary     = 'Adds support for using credentials from Hashicorp Vault'
