@@ -38,6 +38,7 @@ class VaultConnection < ApplicationRecord
     self.expire_time = fetch_expire_time
   rescue StandardError => e
     errors.add(:base, e.message)
+    Foreman::Logging.exception('Failed to set vault expiry time', e)
     throw(:abort)
   end
 
