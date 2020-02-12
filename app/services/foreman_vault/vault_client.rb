@@ -21,6 +21,12 @@ module ForemanVault
       response.data
     end
 
+    def issue_certificate(secret_path, *options)
+      response = client.logical.write(secret_path, *options)
+      raise NoDataError.new(N_('Could not issue certificate: %s'), secret_path) unless response
+      response.data
+    end
+
     def renew_token
       client.auth_token.renew_self
     end

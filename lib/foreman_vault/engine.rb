@@ -45,7 +45,7 @@ module ForemanVault
     config.to_prepare do
       begin
         Foreman::Renderer::Scope::Base.include(ForemanVault::Macros)
-        Foreman::Renderer.configure { |c| c.allowed_generic_helpers += [:vault_secret] }
+        Foreman::Renderer.configure { |c| c.allowed_generic_helpers += [:vault_secret, :vault_issue_certificate] }
       rescue StandardError => e
         Rails.logger.warn "ForemanVault: skipping engine hook (#{e})"
       end

@@ -36,4 +36,27 @@ class VaultClientTest < ActiveSupport::TestCase
       assert_equal @data, @subject.fetch_secret(@secret_path)
     end
   end
+
+  describe '#fetch_certificate' do
+    setup do
+      @pki_path = '/pkiEngine/issue/testRole'
+      @data = {
+        certificate: 'CERTIFICATE_DATA',
+        expiration: 1_582_116_230,
+        issuing_ca: 'CA_CERTIFICATE_DATA',
+        private_key: 'PRIVATE_KEY_DATA',
+        private_key_type: 'rsa',
+        serial_number: '7e:2d:c8:dd:df:da:fe:1f:39:da:39:23:4f:74:c8:1f:1d:4a:db:a7'
+      }
+
+      response = OpenStruct.new(data: @data)
+      logical = mock.tap { |object| object.expects(:write).once.with(@pki_path).returns(response) }
+
+      @client.expects(:logical).once.returns(logical)
+    end
+
+    test 'should return new certificate' do
+      assert_equal @data, @subject.issue_certificate(@pki_path)
+    end
+  end
 end
