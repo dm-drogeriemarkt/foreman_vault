@@ -1,0 +1,12 @@
+<div class="blank-slate-pf">
+  <div class="blank-slate-pf-icon">
+    <%= icon_text("shield", "", :kind => "fa") %>
+  </div>
+  <h1><%= _('Vault Connections') %></h1>
+  <p>
+    <%= _("HashiCorp Vault is a secrets management solution that brokers access for both humans and machines, through programmatic access, to systems. Secrets can be stored, dynamically generated, and in the case of encryption, keys can be consumed as a service without the need to expose the underlying key materials.") %></br>
+  </p>
+  <div class="blank-slate-pf-main-action">
+      <%= new_link(_("New Vault Connection"), {}, { :class => "btn-lg" }) %>
+  </div>
+</div>
