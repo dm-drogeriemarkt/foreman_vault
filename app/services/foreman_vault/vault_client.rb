@@ -17,6 +17,7 @@ module ForemanVault
     def fetch_secret(secret_path)
       response = client.logical.read(secret_path)
       raise NoDataError.new(N_('There is no available data for path: %s'), secret_path) unless response
+
       response.data
     end
 
