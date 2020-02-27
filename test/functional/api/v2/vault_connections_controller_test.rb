@@ -72,7 +72,7 @@ module Api
           assert VaultConnection.exists?(@vault_connection.id)
           delete :destroy, params: { id: @vault_connection.to_param }
           assert_response :success
-          refute VaultConnection.exists?(@vault_connection.id)
+          assert_not VaultConnection.exists?(@vault_connection.id)
         end
       end
     end
