@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'vault'
+
 module ForemanVault
   class Engine < ::Rails::Engine
     engine_name 'foreman_vault'
@@ -44,8 +46,9 @@ module ForemanVault
 
     config.to_prepare do
       begin
-        Foreman::Renderer::Scope::Base.include(ForemanVault::Macros)
-        Foreman::Renderer.configure { |c| c.allowed_generic_helpers += [:vault_secret, :vault_issue_certificate] }
+        ::Host::Managed.include(ForemanVault::HostExtensions)
+        ::Foreman::Renderer::Scope::Base.include(ForemanVault::Macros)
+        ::Foreman::Renderer.configure { |c| c.allowed_generic_helpers += [:vault_secret, :vault_issue_certificate] }
       rescue StandardError => e
         Rails.logger.warn "ForemanVault: skipping engine hook (#{e})"
       end
