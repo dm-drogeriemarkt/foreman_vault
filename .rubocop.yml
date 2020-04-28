@@ -33,3 +33,7 @@ Metrics/BlockLength:
 Metrics/ClassLength:
   Exclude:
     - 'test/**/*'
+
+Naming/FileName:
+  Exclude:
+    - db/seeds.d/103-provisioning_templates.rb
