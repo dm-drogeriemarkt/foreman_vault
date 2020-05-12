@@ -1,7 +1,9 @@
 name: CI
 on: [push, pull_request]
 env:
-  FOREMAN_PLUGIN_NAME: foreman_vault
+  RAILS_ENV: test
+  DATABASE_URL: postgresql://postgres:@localhost/test
+  DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: true
 jobs:
   rubocop:
     runs-on: ubuntu-latest
@@ -10,7 +12,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 2.3
       - name: Setup
         run: |
           gem install bundler
@@ -23,7 +25,7 @@ jobs:
     services:
       postgres:
         image: postgres:12.1
-        ports: ["5432:5432"]
+        ports: ['5432:5432']
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     strategy:
       fail-fast: false
@@ -37,13 +39,14 @@ jobs:
           - foreman-core-branch: develop
             ruby-version: 2.3
     steps:
+      - run: sudo apt-get install build-essential libcurl4-openssl-dev libvirt-dev ruby-libvirt zlib1g-dev libpq-dev
       - uses: actions/checkout@v2
         with:
-          repository: 'theforeman/foreman'
+          repository: theforeman/foreman
           ref: ${{ matrix.foreman-core-branch }}
       - uses: actions/checkout@v2
         with:
-          path: ${{ env.FOREMAN_PLUGIN_NAME }}
+          path: foreman_vault
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -52,9 +55,21 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version:  ${{ matrix.node-version }}
-      - name: Setup Foreman Plugin
-        uses: kamils-iRonin/setup-foreman-plugin@master
-        with:
-          plugin-name: ${{ env.FOREMAN_PLUGIN_NAME }}
+      - name: Setup Plugin
+        run: |
+          echo "gem 'foreman_vault', path: './foreman_vault'" > bundler.d/foreman_vault.local.rb
+          gem install bundler
+          bundle config set without journald development console mysql2 sqlite
+          bundle install --jobs=3 --retry=3
+          bundle exec rake db:create
+          bundle exec rake db:migrate
+          npm install
+          bundle exec rake webpack:compile
       - name: Run plugin tests
-        run: bundle exec rake test:${FOREMAN_PLUGIN_NAME}
+        run: |
+          bundle exec rake test:foreman_vault
+          bundle exec rake test TEST="test/unit/foreman/access_permissions_test.rb"
+      - name: Precompile plugin assets
+        run: bundle exec rake 'plugin:assets:precompile[foreman_vault]'
+        env:
+          RAILS_ENV: production
