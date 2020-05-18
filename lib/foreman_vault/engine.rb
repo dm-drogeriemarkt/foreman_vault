@@ -12,6 +12,14 @@ module ForemanVault
     config.autoload_paths += Dir["#{config.root}/app/lib"]
     config.autoload_paths += Dir["#{config.root}/app/jobs"]
 
+    initializer 'foreman_vault.load_default_settings', before: :load_config_initializers do
+      require_dependency File.expand_path('../../app/models/setting/vault.rb', __dir__) if begin
+                                                                                             Setting.table_exists?
+                                                                                           rescue StandardError
+                                                                                             (false)
+                                                                                           end
+    end
+
     # Add any db migrations
     initializer 'foreman_vault.load_app_instance_data' do |app|
       ForemanVault::Engine.paths['db/migrate'].existent.each do |path|

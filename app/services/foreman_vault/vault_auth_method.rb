@@ -35,7 +35,7 @@ module ForemanVault
     attr_reader :host
     delegate :vault_policy, :vault_connection, :hostname, to: :host
     delegate :name, to: :vault_policy, prefix: true
-    delegate :set_certificate, :delete_certificate, to: :vault_connection, allow_nil: true
+    delegate :set_certificate, :delete_certificate, to: :vault_connection
 
     def options
       {

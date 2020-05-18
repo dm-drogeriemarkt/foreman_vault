@@ -17,7 +17,15 @@ module ForemanVault
     end
 
     def vault_connection
-      ::VaultConnection.find_by(name: params['vault_connection'])
+      return unless vault_connection_name
+
+      ::VaultConnection.find_by(name: vault_connection_name)
+    end
+
+    private
+
+    def vault_connection_name
+      @vault_connection_name ||= params['vault_connection'] || Setting['vault_connection']
     end
   end
 end

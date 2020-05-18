@@ -38,7 +38,7 @@ module ForemanVault
 
     attr_reader :host
     delegate :params, :render_template, :vault_connection, to: :host
-    delegate :policy, :policies, :put_policy, :delete_policy, to: :vault_connection, allow_nil: true
+    delegate :policy, :policies, :put_policy, :delete_policy, to: :vault_connection
 
     def rules
       rendered&.remove(magic_comment_name)

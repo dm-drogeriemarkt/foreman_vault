@@ -32,7 +32,7 @@ module ForemanVault
 
       # rubocop:disable Metrics/AbcSize
       def set_vault
-        logger.info "Pushing #{hostname} data to Vault"
+        logger.info "Pushing #{name} data to Vault"
 
         vault_policy.save if vault_policy.new?
 
@@ -41,18 +41,18 @@ module ForemanVault
           vault_auth_method.save
         end
       rescue StandardError => e
-        Foreman::Logging.exception("Failed to push #{hostname} data to Vault.", e)
-        failure format(_('Failed to push %{name} data to Vault: %{message}\n '), name: hostname, message: e.message), e
+        Foreman::Logging.exception("Failed to push #{name} data to Vault.", e)
+        failure format(_('Failed to push %{name} data to Vault: %{message}\n '), name: name, message: e.message), e
       end
       # rubocop:enable Metrics/AbcSize
 
       def del_vault
-        logger.info "Clearing #{hostname} Vault data"
+        logger.info "Clearing #{name} Vault data"
 
         vault_auth_method&.delete
       rescue StandardError => e
-        Foreman::Logging.exception("Failed to clear #{hostname} Vault data", e)
-        failure format(_("Failed to clear %{name} Vault data: %{message}\n "), name: hostname, message: e.message), e
+        Foreman::Logging.exception("Failed to clear #{name} Vault data", e)
+        failure format(_("Failed to clear %{name} Vault data: %{message}\n "), name: name, message: e.message), e
       end
     end
   end
