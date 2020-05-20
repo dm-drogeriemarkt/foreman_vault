@@ -73,7 +73,7 @@ module ForemanVault
           stub_request(:put, url).with(body: JSON.fast_generate(rules: rules)).to_return(status: 200)
         end
 
-        let(:new_auth_method_name) { "#{host.hostname}-#{new_policy_name}".parameterize }
+        let(:new_auth_method_name) { "#{host}-#{new_policy_name}".parameterize }
         let(:post_auth_method_request) do
           url = "#{vault_connection.url}/v1/auth/cert/certs/#{new_auth_method_name}"
           stub_request(:post, url).with(

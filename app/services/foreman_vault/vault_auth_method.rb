@@ -13,9 +13,9 @@ module ForemanVault
     end
 
     def name
-      return if !hostname || !vault_policy_name
+      return if !host || !vault_policy_name
 
-      [hostname, vault_policy_name].join('-').parameterize
+      [host, vault_policy_name].join('-').parameterize
     end
 
     def save
@@ -33,7 +33,7 @@ module ForemanVault
     private
 
     attr_reader :host
-    delegate :vault_policy, :vault_connection, :hostname, to: :host
+    delegate :vault_policy, :vault_connection, to: :host
     delegate :name, to: :vault_policy, prefix: true
     delegate :set_certificate, :delete_certificate, to: :vault_connection
 

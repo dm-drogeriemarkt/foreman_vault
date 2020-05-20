@@ -8,17 +8,17 @@ class VaultAuthMethodTest < ActiveSupport::TestCase
   let(:host) { FactoryBot.create(:host, :managed) }
 
   describe '#name' do
-    context 'with hostname and vault_policy_name' do
+    context 'with host and vault_policy_name' do
       setup do
         subject.stubs(:vault_policy_name).returns('vault_policy_name')
       end
 
-      it { assert_equal "#{host.hostname}-vault_policy_name".parameterize, subject.name }
+      it { assert_equal "#{host}-vault_policy_name".parameterize, subject.name }
     end
 
-    context 'without hostname' do
+    context 'without host' do
       setup do
-        subject.stubs(:hostname).returns(nil)
+        subject.stubs(:host).returns(nil)
         subject.stubs(:vault_policy_name).returns('vault_policy_name')
       end
 
