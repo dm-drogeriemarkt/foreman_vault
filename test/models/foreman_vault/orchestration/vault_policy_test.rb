@@ -79,8 +79,8 @@ module ForemanVault
           stub_request(:post, url).with(
             body: JSON.fast_generate(
               certificate: host.vault_auth_method.send(:certificate),
-              token_policies: new_auth_method_name,
-              allowed_common_names: VaultAuthMethod::ALLOWED_COMMON_NAMES
+              token_policies: new_policy_name,
+              allowed_common_names: [host.fqdn]
             )
           ).to_return(status: 200)
         end

@@ -67,13 +67,14 @@ class VaultAuthMethodTest < ActiveSupport::TestCase
     context 'when valid' do
       it 'creates auth method in the Vault' do
         subject.stubs(:name).returns('name')
+        subject.stubs(:vault_policy_name).returns('vault_policy_name')
         subject.stubs(:certificate).returns('cert')
 
         subject.expects(:set_certificate).once.with(
           'name',
           certificate: 'cert',
-          token_policies: 'name',
-          allowed_common_names: ForemanVault::VaultAuthMethod::ALLOWED_COMMON_NAMES
+          token_policies: 'vault_policy_name',
+          allowed_common_names: [host.fqdn]
         )
         subject.save
       end

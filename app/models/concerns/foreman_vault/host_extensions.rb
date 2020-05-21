@@ -25,7 +25,7 @@ module ForemanVault
     private
 
     def vault_connection_name
-      @vault_connection_name ||= params['vault_connection'] || Setting['vault_connection']
+      params['vault_connection'] || Setting['vault_connection']
     end
   end
 end
