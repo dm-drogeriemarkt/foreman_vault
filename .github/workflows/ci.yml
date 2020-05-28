@@ -30,16 +30,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        foreman-core-branch: [1.20-stable, 1.21-stable, 1.22-stable, 1.23-stable, 1.24-stable, 2.0-stable, develop]
+        foreman-core-branch: [1.20-stable, 1.21-stable, 1.22-stable, 1.23-stable, 1.24-stable, 2.0-stable, 2.1-stable, develop]
         ruby-version: [2.3, 2.5, 2.6]
         node-version: [10]
         exclude:
           - foreman-core-branch: 2.0-stable
             ruby-version: 2.3
+          - foreman-core-branch: 2.1-stable
+            ruby-version: 2.3
           - foreman-core-branch: develop
             ruby-version: 2.3
     steps:
-      - run: sudo apt-get install build-essential libcurl4-openssl-dev libvirt-dev ruby-libvirt zlib1g-dev libpq-dev
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install build-essential libcurl4-openssl-dev libvirt-dev ruby-libvirt zlib1g-dev libpq-dev
       - uses: actions/checkout@v2
         with:
           repository: theforeman/foreman

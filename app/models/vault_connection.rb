@@ -13,7 +13,9 @@ class VaultConnection < ApplicationRecord
 
   scope :with_valid_token, -> { where(vault_error: nil).where('expire_time > ?', Time.zone.now) }
 
-  delegate :fetch_expire_time, :fetch_secret, :issue_certificate, to: :client
+  delegate :fetch_expire_time, :fetch_secret, :issue_certificate,
+           :policy, :policies, :put_policy, :delete_policy,
+           :set_certificate, :certificates, :delete_certificate, to: :client
 
   def token_valid?
     vault_error.nil? && expire_time && expire_time > Time.zone.now

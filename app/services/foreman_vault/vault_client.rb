@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
-require 'vault'
-
 module ForemanVault
   class VaultClient
     def initialize(base_url, token)
       @base_url = base_url
       @token = token
     end
+
+    delegate :sys, :auth_tls, to: :client
+    delegate :policy, :policies, :put_policy, :delete_policy, to: :sys
+    delegate :certificate, :certificates, :set_certificate, :delete_certificate, to: :auth_tls
 
     def fetch_expire_time
       response = client.auth_token.lookup_self
