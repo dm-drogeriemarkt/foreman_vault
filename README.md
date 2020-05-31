@@ -98,7 +98,7 @@ path "secret/foo" {
 
 You can create multiple `VaultPolicy` templates and configure the default policy used in host orchestration by setting the Foreman Setting `vault_policy_template` to the desired one.
 
-**Note: If the policy renders empty (yes you can use conditions within ERB), the orchestration is skipped!**
+**Note: If the policy renders empty (yes, you can use conditions within ERB), the orchestration is skipped!**
 
 ### Auth methods
 
