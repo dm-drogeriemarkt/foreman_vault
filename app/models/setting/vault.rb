@@ -6,7 +6,7 @@ class Setting
     BLANK_ATTRS << 'vault_policy_template'
 
     def self.default_settings
-      [set_vault_connection, set_vault_policy_template]
+      [set_vault_connection, set_vault_policy_template, set_vault_orchestration_enabled]
     end
 
     def self.load_defaults
@@ -67,6 +67,15 @@ class Setting
 
       def vault_policy_templates_collection
         proc { Hash[ProvisioningTemplate.unscoped.of_kind(:VaultPolicy).map { |tmpl| [tmpl.name, tmpl.name] }] }
+      end
+
+      def set_vault_orchestration_enabled
+        set(
+          'vault_orchestration_enabled',
+          N_('Enable or disable the Vault orchestration step for managing policies and auth methods'),
+          false,
+          N_('Vault Orchestration enabled')
+        )
       end
     end
   end

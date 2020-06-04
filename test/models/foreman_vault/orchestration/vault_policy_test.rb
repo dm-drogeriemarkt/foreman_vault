@@ -10,11 +10,14 @@ module ForemanVault
         let(:queue) { mock('queue') }
         let(:vault_policy) { mock('vault_policy') }
         let(:vault_auth_method) { mock('vault_auth_method') }
+        let(:vault_connection) { FactoryBot.create(:vault_connection, :without_callbacks) }
 
         setup do
           host.stubs(:queue).returns(queue)
           host.stubs(:vault_policy).returns(vault_policy)
           host.stubs(:vault_auth_method).returns(vault_auth_method)
+          FactoryBot.create(:parameter, name: 'vault_connection', value: vault_connection.name)
+          FactoryBot.create(:setting, name: :vault_orchestration_enabled, value: true)
         end
 
         test 'should queue Vault orchestration' do
@@ -55,11 +58,14 @@ module ForemanVault
         let(:queue) { mock('queue') }
         let(:vault_policy) { mock('vault_policy') }
         let(:vault_auth_method) { mock('vault_auth_method') }
+        let(:vault_connection) { FactoryBot.create(:vault_connection, :without_callbacks) }
 
         setup do
           host.stubs(:queue).returns(queue)
           host.stubs(:vault_policy).returns(vault_policy)
           host.stubs(:vault_auth_method).returns(vault_auth_method)
+          FactoryBot.create(:parameter, name: 'vault_connection', value: vault_connection.name)
+          FactoryBot.create(:setting, name: :vault_orchestration_enabled, value: true)
         end
 
         context 'when auth_method is valid' do
@@ -127,6 +133,7 @@ module ForemanVault
 
         setup do
           Setting.find_by(name: 'ssl_ca_file').update(value: File.join(ForemanVault::Engine.root, 'test/fixtures/ca.crt'))
+          FactoryBot.create(:setting, name: :vault_orchestration_enabled, value: true)
           FactoryBot.create(:setting, :vault_policy)
           FactoryBot.create(:provisioning_template, :vault_policy, name: Setting['vault_policy_template'])
           FactoryBot.create(:parameter, name: 'vault_connection', value: vault_connection.name)
