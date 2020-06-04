@@ -16,6 +16,7 @@ module ForemanVault
 
       def queue_vault_push
         return if !managed? || errors.any?
+        return unless orchestration_enabled?
         return unless vault_policy.valid?
         return unless vault_auth_method.valid?
 
@@ -25,6 +26,7 @@ module ForemanVault
 
       def queue_vault_destroy
         return if !managed? || errors.any?
+        return unless orchestration_enabled?
         return unless vault_auth_method.valid?
 
         queue.create(name: _('Clear %s Vault data') % self, priority: 60,
@@ -54,6 +56,13 @@ module ForemanVault
       rescue StandardError => e
         Foreman::Logging.exception("Failed to clear #{name} Vault data", e)
         failure format(_("Failed to clear %{name} Vault data: %{message}\n "), name: name, message: e.message), e
+      end
+
+      def orchestration_enabled?
+        return false unless Setting[:vault_orchestration_enabled]
+        return false if vault_connection.nil?
+
+        true
       end
     end
   end
