@@ -14,6 +14,9 @@ Style/Documentation:
 Metrics/LineLength:
   Max: 190
 
+Metrics/ParameterLists:
+  Max: 6
+
 Style/WordArray:
   Enabled: false
 
