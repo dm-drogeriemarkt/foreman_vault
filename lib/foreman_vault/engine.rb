@@ -29,7 +29,7 @@ module ForemanVault
 
     initializer 'foreman_vault.register_plugin', before: :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_vault do
-        requires_foreman '>= 1.20'
+        requires_foreman '>= 1.23'
 
         apipie_documented_controllers ["#{ForemanVault::Engine.root}/app/controllers/api/v2/*.rb"]
 
@@ -55,6 +55,7 @@ module ForemanVault
     config.to_prepare do
       begin
         ::Host::Managed.include(ForemanVault::HostExtensions)
+        ::ProvisioningTemplate.include(ForemanVault::ProvisioningTemplateExtensions)
         ::Foreman::Renderer::Scope::Base.include(ForemanVault::Macros)
         ::Foreman::Renderer.configure { |c| c.allowed_generic_helpers += [:vault_secret, :vault_issue_certificate] }
       rescue StandardError => e

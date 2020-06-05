@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        foreman-core-branch: [1.20-stable, 1.21-stable, 1.22-stable, 1.23-stable, 1.24-stable, 2.0-stable, 2.1-stable, develop]
+        foreman-core-branch: [1.23-stable, 1.24-stable, 2.0-stable, 2.1-stable, develop]
         ruby-version: [2.3, 2.5, 2.6]
         node-version: [10]
         exclude:

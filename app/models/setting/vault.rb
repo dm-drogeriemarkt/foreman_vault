@@ -40,12 +40,15 @@ class Setting
       end
 
       def default_vault_connection
+        return nil unless VaultConnection.table_exists?
         return unless VaultConnection.unscoped.count == 1
 
         VaultConnection.unscoped.first.name
       end
 
       def vault_connections_collection
+        return [] unless VaultConnection.table_exists?
+
         proc { Hash[VaultConnection.unscoped.all.map { |vc| [vc.name, vc.name] }] }
       end
 
