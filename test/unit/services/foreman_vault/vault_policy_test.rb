@@ -112,18 +112,18 @@ class VaultPolicyTest < ActiveSupport::TestCase
   end
 
   describe '#delete' do
-    context 'with name' do
+    context 'when valid' do
       it 'deletes Vault Policy' do
-        subject.stubs(:name).returns('name')
+        subject.stubs(:valid?).returns(true)
 
         subject.expects(:delete_policy).once.with(subject.name)
         subject.delete
       end
     end
 
-    context 'without name' do
+    context 'when not valid' do
       it 'does not delete Vault Policy' do
-        subject.stubs(:name).returns(nil)
+        subject.stubs(:valid?).returns(false)
 
         subject.expects(:delete_policy).never
         subject.delete
