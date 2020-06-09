@@ -50,6 +50,41 @@ module ForemanVault
         end
       end
 
+      describe '#queue_vault_destroy' do
+        let(:host) { FactoryBot.create(:host, :managed) }
+        let(:queue) { mock('queue') }
+        let(:vault_policy) { mock('vault_policy') }
+        let(:vault_auth_method) { mock('vault_auth_method') }
+
+        setup do
+          host.stubs(:queue).returns(queue)
+          host.stubs(:vault_policy).returns(vault_policy)
+          host.stubs(:vault_auth_method).returns(vault_auth_method)
+        end
+
+        context 'when auth_method is valid' do
+          test 'should queue del_vault' do
+            vault_auth_method.stubs(:valid?).returns(true)
+
+            queue.expects(:create).with(
+              name: "Clear #{host} Vault data",
+              priority: 60,
+              action: [host, :del_vault]
+            ).once
+            host.send(:queue_vault_destroy)
+          end
+        end
+
+        context 'when auth_method is not valid' do
+          test 'should not queue del_vault' do
+            vault_auth_method.stubs(:valid?).returns(false)
+
+            queue.expects(:create).never
+            host.send(:queue_vault_destroy)
+          end
+        end
+      end
+
       describe '#set_vault' do
         let(:environment) { FactoryBot.create(:environment, name: 'MyEnv') }
         let(:host) { FactoryBot.create(:host, :managed, environment: environment) }

@@ -29,7 +29,7 @@ module ForemanVault
     end
 
     def delete
-      return false unless name
+      return false unless valid?
 
       delete_policy(name)
     end

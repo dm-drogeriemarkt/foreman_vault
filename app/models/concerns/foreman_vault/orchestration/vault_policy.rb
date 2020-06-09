@@ -25,6 +25,7 @@ module ForemanVault
 
       def queue_vault_destroy
         return if !managed? || errors.any?
+        return unless vault_auth_method.valid?
 
         queue.create(name: _('Clear %s Vault data') % self, priority: 60,
                      action: [self, :del_vault])
