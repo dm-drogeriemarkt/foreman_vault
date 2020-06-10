@@ -18,6 +18,13 @@ Auth methods also get deleted after the host is removed from Foreman.
 
 This allows Foreman to create everything needed to access Hashicorp Vault directly from a VM using it's Puppet certificate (e.g. for _Deferred functions_ in Puppet or other CLI tools).
 
+## Compatibility
+
+| Foreman Version | Plugin Version |
+| --------------- | -------------- |
+| >= 1.23         | ~> 0.3         |
+| >= 1.20         | ~> 0.2         |
+
 ## Requirements
 
 - Foreman >= 1.20
