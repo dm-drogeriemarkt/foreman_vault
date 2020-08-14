@@ -43,6 +43,7 @@ module ForemanVault
           old&.vault_auth_method&.delete
           vault_auth_method.save
         end
+        true
       rescue StandardError => e
         Foreman::Logging.exception("Failed to push #{name} data to Vault.", e)
         failure format(_('Failed to push %{name} data to Vault: %{message}\n '), name: name, message: e.message), e
