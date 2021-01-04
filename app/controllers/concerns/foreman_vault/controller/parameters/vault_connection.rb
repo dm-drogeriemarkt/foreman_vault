@@ -9,7 +9,7 @@ module ForemanVault
         class_methods do
           def vault_connection_params_filter
             Foreman::ParameterFilter.new(::VaultConnection).tap do |filter|
-              filter.permit :name, :url, :token
+              filter.permit :name, :url, :token, :role_id, :secret_id
             end
           end
         end

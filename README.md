@@ -30,6 +30,7 @@ This allows Foreman to create everything needed to access Hashicorp Vault direct
 - Foreman >= 1.20
 - Working Vault instance
   - with _cert_ auth enabled
+  - with _approle_ auth enabled
   - with _kv_ secret store enabled
 - valid Vault Token
 
@@ -47,6 +48,27 @@ $ vault auth enable cert
 $ vault token create -period=60m
 [...]
 ```
+
+To interact with Vault you can use Vault UI, which is available at `http://127.0.0.1:8200/ui`.
+
+- The AppRole auth method
+
+```
+$ vault auth enable approle
+$ vault write auth/approle/role/my-role policies="default"
+Success! Data written to: auth/approle/role/my-role
+$ vault read auth/approle/role/my-role/role-id
+Key        Value
+---        -----
+role_id    8403910c-e563-d2f2-1c77-6e26319be8b5
+$ vault write -f auth/approle/role/my-role/secret-id
+Key                   Value
+---                   -----
+secret_id             1058434b-b4aa-bf5a-b376-a15d9efb1059
+secret_id_accessor    9cc19ed7-201f-7438-782e-561edd12b2a8
+```
+
+See also [Vault CLI testing AppRole](https://gist.github.com/kamils-iRonin/d099908eaf0500de8ad9c2cea5658d01)
 
 ## Installation
 

@@ -8,7 +8,7 @@ FactoryBot.define do
     expire_time { Time.zone.now + 1.year }
 
     trait :invalid do
-      expire_time { nil }
+      expire_time { Time.zone.now - 1.year }
     end
 
     trait :without_callbacks do

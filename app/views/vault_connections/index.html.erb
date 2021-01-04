@@ -4,9 +4,11 @@
 <table class="<%= table_css_classes 'table-fixed' %>">
   <thead>
     <tr>
-      <th class="col-md-9"><%= sort :name, :as => s_('Vault Connections|Name') %></th>
-      <th class="col-md-1"><%= _('Valid') %></th>
-      <th class="col-md-1"><%= _('Expire time') %></th>
+      <th class="col-md-2"><%= sort :name, as: s_('Vault Connections|Name') %></th>
+      <th class="col-md-2"><%= _('URL') %></th>
+      <th class="col-md-2"><%= _('Role ID') %></th>
+      <th class="col-md-1"><%= _('Token Valid') %></th>
+      <th class="col-md-1"><%= _('Token Expire time') %></th>
       <th class="col-md-1"><%= _('Actions') %></th>
     </tr>
   </thead>
@@ -14,17 +16,29 @@
     <% @vault_connections.each do |vault_connection| %>
       <tr>
         <td class="ellipsis">
-          <%= link_to_if_authorized vault_connection.name, hash_for_edit_vault_connection_path(:id => vault_connection) %>
+          <%= link_to_if_authorized vault_connection.name, hash_for_edit_vault_connection_path(id: vault_connection) %>
+        </td>
+        <td class="ellipsis">
+          <code class="transparent"><%= vault_connection.url %></code>
+        </td>
+        <td class="ellipsis">
+          <% if vault_connection.with_approle? %>
+            <code class="transparent"><%= vault_connection.role_id %></code>
+          <% end %>
         </td>
         <td align='center'>
-          <% if vault_connection.token_valid? %>
+          <% vault_connection.with_token? && if vault_connection.token_valid? %>
             <%= ('<span class="glyphicon glyphicon-ok"/>').html_safe %>
           <% else %>
             <%= ('<span class="glyphicon glyphicon-remove" title="%s"/>' % vault_connection.vault_error).html_safe %>
           <% end %>
         </td>
-        <td><%= date_time_absolute(vault_connection.expire_time) %></td>
-        <td><%= action_buttons display_delete_if_authorized hash_for_vault_connection_path(:id => vault_connection), :data => { :confirm => _("Delete %s?") % vault_connection.name } %></td>
+        <td>
+          <% if vault_connection.with_token? %>
+            <%= date_time_absolute(vault_connection.expire_time) %>
+          <% end %>
+        </td>
+        <td><%= action_buttons display_delete_if_authorized hash_for_vault_connection_path(id: vault_connection), data: { confirm: _("Delete %s?") % vault_connection.name } %></td>
       </tr>
     <% end %>
   </tbody>

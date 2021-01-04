@@ -1,7 +1,23 @@
-<%= form_for @vault_connection, :url => (@vault_connection.new_record? ? vault_connections_path : vault_connection_path(:id => @vault_connection)) do |f| %>
+<%= form_for @vault_connection, url: (@vault_connection.new_record? ? vault_connections_path : vault_connection_path(id: @vault_connection)) do |f| %>
   <%= base_errors_for @vault_connection %>
-  <%= text_f f, :name, :help_inline => _("Vault Connection name") %>
-  <%= text_f f, :url, :help_inline => _("Vault Server url") %>
-  <%= text_f f, :token, :help_inline => _("Vault Connection token") %>
+  <%= text_f f, :name, help_inline: _("Vault Connection name") %>
+  <%= text_f f, :url, help_inline: _("Vault Server url") %>
+  <div class="auth_methods">
+    <h4><%=_("Auth Methods")%></h4>
+    <%= alert(text: _('Please only fill in one auth method'), class: 'alert-info', close: false) %>
+    <ul class="nav nav-tabs" data-tabs="tabs">
+      <li class="active"><a href="#approle" data-toggle="tab"><%= _('AppRole') %></a></li>
+      <li><a href="#token" data-toggle="tab"><%= _('Token') %></a></li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane active" id="approle">
+        <%= text_f f, :role_id, label: _("Role ID"), help_inline: _("Vault Connection Role ID") %>
+        <%= text_f f, :secret_id, label: _("Secret ID"), help_inline: _("Vault Connection Secret ID") %>
+      </div>
+      <div class="tab-pane" id="token">
+        <%= text_f f, :token, help_inline: _("Vault Connection token") %>
+      </div>
+    </div>
+  </div>
   <%= submit_or_cancel f %>
 <% end %>
