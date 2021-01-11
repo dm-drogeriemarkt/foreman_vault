@@ -29,7 +29,7 @@ module ForemanVault
 
     initializer 'foreman_vault.register_plugin', before: :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_vault do
-        requires_foreman '>= 1.23'
+        requires_foreman '>= 2.3'
 
         apipie_documented_controllers ["#{ForemanVault::Engine.root}/app/controllers/api/v2/*.rb"]
 
