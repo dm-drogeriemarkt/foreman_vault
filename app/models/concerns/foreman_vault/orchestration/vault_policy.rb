@@ -38,11 +38,7 @@ module ForemanVault
         logger.info "Pushing #{name} data to Vault"
 
         vault_policy.save if vault_policy.new?
-
-        if vault_auth_method.name != old&.vault_auth_method&.name
-          old&.vault_auth_method&.delete
-          vault_auth_method.save
-        end
+        vault_auth_method.save
         true
       rescue StandardError => e
         Foreman::Logging.exception("Failed to push #{name} data to Vault.", e)
