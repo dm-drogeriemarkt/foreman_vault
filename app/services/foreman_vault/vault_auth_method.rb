@@ -11,9 +11,9 @@ module ForemanVault
     end
 
     def name
-      return if !host || !vault_policy_name
+      return unless host
 
-      [host, vault_policy_name].join('-').parameterize
+      host.name.parameterize
     end
 
     def save

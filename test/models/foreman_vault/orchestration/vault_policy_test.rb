@@ -114,7 +114,7 @@ module ForemanVault
           stub_request(:put, url).with(body: JSON.fast_generate(rules: rules)).to_return(status: 200)
         end
 
-        let(:new_auth_method_name) { "#{host}-#{new_policy_name}".parameterize }
+        let(:new_auth_method_name) { host.name.parameterize }
         let(:post_auth_method_request) do
           url = "#{vault_connection.url}/v1/auth/cert/certs/#{new_auth_method_name}"
           stub_request(:post, url).with(
@@ -126,7 +126,7 @@ module ForemanVault
           ).to_return(status: 200)
         end
 
-        let(:delete_old_auth_method_request) do
+        let(:override_old_auth_method_request) do
           url = "#{vault_connection.url}/v1/auth/cert/certs/#{host.vault_auth_method.name}"
           stub_request(:delete, url).to_return(status: 200)
         end
@@ -142,13 +142,11 @@ module ForemanVault
           get_policies_request
           put_policy_request
           post_auth_method_request
-          delete_old_auth_method_request
 
           host.update(owner: new_owner)
         end
 
         it { assert_requested(post_auth_method_request) }
-        it { assert_requested(delete_old_auth_method_request) }
 
         context 'when policy already exists on Vault' do
           let(:vault_policies) { [new_policy_name] }
