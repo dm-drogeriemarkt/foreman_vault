@@ -3,7 +3,42 @@
 require 'rake/testtask'
 
 # Tasks
-namespace :foreman_vault do
+namespace :foreman_vault do # rubocop:disable Metrics/BlockLength
+  namespace :auth_methods do
+    desc 'Push auth methods for all hosts to Vault'
+    task push: :environment do
+      User.as_anonymous_admin do
+        hosts = Host::Managed.where(managed: true)
+
+        hosts.each_with_index do |host, index|
+          result = host.vault_auth_method.save
+          if result
+            puts "[#{index + 1}/#{hosts.count}] Auth-Method of \"#{host.name}\" pushed to Vault server \"#{host.vault_connection.url}\""
+          else
+            puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{result.error}"
+          end
+        end
+      end
+    end
+  end
+
+  namespace :policies do
+    desc 'Push policies for all hosts to Vault'
+    task push: :environment do
+      User.as_anonymous_admin do
+        hosts = Host::Managed.where(managed: true)
+
+        hosts.each_with_index do |host, index|
+          result = host.vault_policy.save
+          if result
+            puts "[#{index + 1}/#{hosts.count}] Policy of \"#{host.name}\" pushed to Vault server \"#{host.vault_connection.url}\""
+          else
+            puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{result.error}"
+          end
+        end
+      end
+    end
+  end
 end
 
 # Tests
