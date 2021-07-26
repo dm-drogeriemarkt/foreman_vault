@@ -17,7 +17,11 @@ module ForemanVault
           host.stubs(:vault_policy).returns(vault_policy)
           host.stubs(:vault_auth_method).returns(vault_auth_method)
           FactoryBot.create(:parameter, name: 'vault_connection', value: vault_connection.name)
-          FactoryBot.create(:setting, name: :vault_orchestration_enabled, value: true)
+          if Setting.find_by(name: 'vault_orchestration_enabled')
+            Setting['vault_orchestration_enabled'] = true
+          else
+            FactoryBot.create(:setting, name: :vault_orchestration_enabled, value: true)
+          end
         end
 
         test 'should queue Vault orchestration' do
@@ -65,7 +69,11 @@ module ForemanVault
           host.stubs(:vault_policy).returns(vault_policy)
           host.stubs(:vault_auth_method).returns(vault_auth_method)
           FactoryBot.create(:parameter, name: 'vault_connection', value: vault_connection.name)
-          FactoryBot.create(:setting, name: :vault_orchestration_enabled, value: true)
+          if Setting.find_by(name: 'vault_orchestration_enabled')
+            Setting['vault_orchestration_enabled'] = true
+          else
+            FactoryBot.create(:setting, name: :vault_orchestration_enabled, value: true)
+          end
         end
 
         context 'when auth_method is valid' do
@@ -132,8 +140,16 @@ module ForemanVault
 
         setup do
           Setting.find_by(name: 'ssl_ca_file').update(value: File.join(ForemanVault::Engine.root, 'test/fixtures/ca.crt'))
-          FactoryBot.create(:setting, name: :vault_orchestration_enabled, value: true)
-          FactoryBot.create(:setting, :vault_policy)
+          if Setting.find_by(name: 'vault_orchestration_enabled')
+            Setting['vault_orchestration_enabled'] = true
+          else
+            FactoryBot.create(:setting, name: :vault_orchestration_enabled, value: true)
+          end
+          if Setting.find_by(name: 'vault_policy_template')
+            Setting['vault_policy_template'] = 'Default Vault Policy'
+          else
+            FactoryBot.create(:setting, :vault_policy)
+          end
           FactoryBot.create(:provisioning_template, :vault_policy, name: Setting['vault_policy_template'])
           FactoryBot.create(:parameter, name: 'vault_connection', value: vault_connection.name)
           host.stubs(:skip_orchestration_for_testing?).returns(false)

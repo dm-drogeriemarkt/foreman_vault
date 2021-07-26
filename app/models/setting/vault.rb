@@ -9,16 +9,34 @@ class Setting
       [set_vault_connection, set_vault_policy_template, set_vault_orchestration_enabled]
     end
 
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def self.load_defaults
       # Check the table exists
       return unless super
 
       transaction do
-        default_settings.each { |s| create! s.update(category: 'Setting::Vault') }
+        default_settings.each do |s|
+          setting = create! s.update(category: 'Setting::Vault')
+
+          Foreman.try(:settings)&._add(
+            s[:name],
+            s.slice(:description, :default, :full_name, :encrypted)
+             .merge(category: 'Setting::Vault')
+             .yield_self do |params|
+               unless Gem::Version.new(SETTINGS[:version].notag) < Gem::Version.new('2.6')
+                 params[:context] = :vault
+                 params[:type] = setting.settings_type
+               end
+               params
+             end
+          )
+        end
       end
 
+      Foreman.try(:settings)&.load
       true
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def self.humanized_category
       N_('Vault')

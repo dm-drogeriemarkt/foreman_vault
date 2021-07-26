@@ -8,7 +8,11 @@ class VaultPolicyTest < ActiveSupport::TestCase
   let(:host) { FactoryBot.create(:host, :managed) }
 
   setup do
-    FactoryBot.create(:setting, name: 'vault_policy_template', value: 'Default Vault Policy')
+    if Setting.find_by(name: 'vault_policy_template')
+      Setting['vault_policy_template'] = 'Default Vault Policy'
+    else
+      FactoryBot.create(:setting, name: 'vault_policy_template', value: 'Default Vault Policy')
+    end
   end
 
   describe 'valid?' do
