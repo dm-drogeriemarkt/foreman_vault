@@ -1,6 +1,6 @@
-# NAME: <%= @host.owner %>-<%= @host.environment %>
+# NAME: <%= @host.owner %>-<%= @host.name %>
 
-# allow access to secrets from puppet hosts from <foreman_owner>-<puppet_environment>
-path "secrets/data/<%= @host.owner %>/<%= @host.environment %>/*" {
+# allow access to secrets from puppet hosts from <foreman_owner>-<hostname>
+path "secrets/data/<%= @host.owner %>/<%= @host.name %>/*" {
     capabilities = ["create", "read", "update"]
 }
