@@ -11,11 +11,15 @@ namespace :foreman_vault do # rubocop:disable Metrics/BlockLength
         hosts = Host::Managed.where(managed: true)
 
         hosts.each_with_index do |host, index|
-          result = host.vault_auth_method.save
-          if result
-            puts "[#{index + 1}/#{hosts.count}] Auth-Method of \"#{host.name}\" pushed to Vault server \"#{host.vault_connection.url}\""
-          else
-            puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{result.error}"
+          begin
+            result = host.reload.vault_auth_method.save
+            if result
+              puts "[#{index + 1}/#{hosts.count}] Auth-Method of \"#{host.name}\" pushed to Vault server \"#{host.vault_connection.url}\""
+            else
+              puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{result}"
+            end
+          rescue StandardError => err
+            puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{err}"
           end
         end
       end
@@ -29,11 +33,15 @@ namespace :foreman_vault do # rubocop:disable Metrics/BlockLength
         hosts = Host::Managed.where(managed: true)
 
         hosts.each_with_index do |host, index|
-          result = host.vault_policy.save
-          if result
-            puts "[#{index + 1}/#{hosts.count}] Policy of \"#{host.name}\" pushed to Vault server \"#{host.vault_connection.url}\""
-          else
-            puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{result.error}"
+          begin
+            result = host.reload.vault_policy.save
+            if result
+              puts "[#{index + 1}/#{hosts.count}] Policy of \"#{host.name}\" pushed to Vault server \"#{host.vault_connection.url}\""
+            else
+              puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{result}"
+            end
+          rescue StandardError => err
+            puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{err}"
           end
         end
       end
