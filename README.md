@@ -32,7 +32,7 @@ This allows Foreman to create everything needed to access Hashicorp Vault direct
 - Working Vault instance
   - with _cert_ auth enabled
   - with _approle_ auth enabled
-  - with _kv_ secret store enabled
+  - with _kv v1_ secret store enabled
 - valid Vault Token
 
 **Dev Vault Instance**
@@ -43,7 +43,7 @@ To run a local Vault dev environment on MacOS use:
 $ brew install vault
 $ vault server -dev
 $ export VAULT_ADDR='http://127.0.0.1:8200'
-$ vault secrets enable kv
+$ vault secrets enable -version=1 kv
 $ vault auth enable cert
 
 $ vault token create -period=60m
