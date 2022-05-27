@@ -33,7 +33,6 @@ class Setting
         end
       end
 
-      Foreman.try(:settings)&.load
       true
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
