@@ -139,7 +139,7 @@ module ForemanVault
         end
 
         setup do
-          Setting.find_by(name: 'ssl_ca_file').update(value: File.join(ForemanVault::Engine.root, 'test/fixtures/ca.crt'))
+          Setting['ssl_ca_file'] = File.join(ForemanVault::Engine.root, 'test/fixtures/ca.crt')
           if Setting.find_by(name: 'vault_orchestration_enabled')
             Setting['vault_orchestration_enabled'] = true
           else

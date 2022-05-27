@@ -11,6 +11,8 @@ class Setting
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def self.load_defaults
+      return unless Gem::Version.new(SETTINGS[:version].notag) < Gem::Version.new('3.4')
+
       # Check the table exists
       return unless super
 

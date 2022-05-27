@@ -45,6 +45,33 @@ module ForemanVault
                                                     'api/v2/vault_connections': [:destroy] }, resource_type: 'VaultConnection'
         end
 
+        # New settings definition DSL is available from Foreman 3.0
+        if respond_to?(:settings)
+          settings do
+            category(:vault, N_('Vault')) do
+              setting('vault_connection',
+                      full_name: N_('Default Vault connection'),
+                      type: :string,
+                      description: N_('Default Vault Connection that can be override using parameters'),
+                      default: VaultConnection.table_exists? && VaultConnection.unscoped.count == 1 ? VaultConnection.unscoped.first.name : nil,
+                      collection: VaultConnection.table_exists? ? proc { Hash[VaultConnection.unscoped.all.map { |vc| [vc.name, vc.name] }] } : [],
+                      include_blank: _('Select Vault Connection'))
+              setting('vault_policy_template',
+                      full_name: N_('Vault Policy template name'),
+                      type: :string,
+                      description: N_('The name of the ProvisioningTemplate that will be used for Vault Policy'),
+                      default: ProvisioningTemplate.unscoped.of_kind(:VaultPolicy).find_by(name: 'Default Vault Policy')&.name,
+                      collection: proc { Hash[ProvisioningTemplate.unscoped.of_kind(:VaultPolicy).map { |tmpl| [tmpl.name, tmpl.name] }] },
+                      include_blank: _('Select Template'))
+              setting('vault_orchestration_enabled',
+                      full_name: N_('Vault Orchestration enabled'),
+                      type: :boolean,
+                      description: N_('Enable or disable the Vault orchestration step for managing policies and auth methods'),
+                      default: false)
+            end
+          end
+        end
+
         # add menu entry
         menu :top_menu, :vault_connections, url_hash: { controller: :vault_connections, action: :index },
                                             caption: N_('Vault Connections'),

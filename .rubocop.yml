@@ -31,6 +31,7 @@ Style/FormatStringToken:
 
 Metrics/BlockLength:
   Exclude:
+    - lib/foreman_vault/engine.rb
     - 'test/**/*'
 
 Metrics/ClassLength:
