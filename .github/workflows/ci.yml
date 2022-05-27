@@ -16,6 +16,7 @@ jobs:
       - name: Setup
         run: |
           gem install bundler
+          echo "gem 'rdoc', '< 6.4'" >> Gemfile
           bundle install --jobs=3 --retry=3
       - name: Run rubocop
         run: bundle exec rubocop
