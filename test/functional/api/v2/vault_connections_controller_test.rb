@@ -53,15 +53,21 @@ module Api
           client = mock.tap { |object| object.expects(:auth_token).returns(auth_token) }
           Vault::Client.expects(:new).returns(client)
 
-          params = { name: 'New name', url: 'http://localhost:8200', token: 'token' }
+          params = { url: 'http://updatedhost:8200', token: 'token' }
           put :update, params: { id: @vault_connection.to_param, vault_connection: params }
           response = ActiveSupport::JSON.decode(@response.body)
           assert_response :success
-          assert_equal params[:name], response['name']
+          assert_equal params[:url], response['url']
         end
 
         test 'should not update invalid' do
           params = { name: nil, url: nil, token: nil }
+          put :update, params: { id: @vault_connection.to_param, vault_connection: params }
+          assert_response :unprocessable_entity
+        end
+
+        test 'should not allow to update name' do
+          params = { name: 'Updated name' }
           put :update, params: { id: @vault_connection.to_param, vault_connection: params }
           assert_response :unprocessable_entity
         end
