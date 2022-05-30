@@ -99,7 +99,7 @@ class VaultAuthMethodTest < ActiveSupport::TestCase
 
   describe '#certificate' do
     setup do
-      Setting.find_by(name: 'ssl_ca_file').update(value: cert_path)
+      Setting['ssl_ca_file'] = cert_path
     end
 
     context 'when certificate file can be read' do
