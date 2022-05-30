@@ -10,4 +10,10 @@ class VaultConnectionTest < ActiveSupport::TestCase
   should validate_presence_of(:url)
   should allow_value('http://127.0.0.1:8200').for(:url)
   should_not allow_value('börks').for(:url)
+
+  test 'validate that the name cannot be changed' do
+    assert_raises(ActiveRecord::RecordInvalid, 'Validation failed: Name cannot be changed after creation') do
+      subject.update!(name: 'UpdatedName')
+    end
+  end
 end

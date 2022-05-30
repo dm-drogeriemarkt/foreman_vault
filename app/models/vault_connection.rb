@@ -5,6 +5,7 @@ class VaultConnection < ApplicationRecord
 
   validates_lengths_from_database
   validates :name, presence: true, uniqueness: true
+  validates :name, inclusion: { in: ->(i) { [i.name_was] }, message: _('cannot be changed after creation') }, on: :update
   validates :url, presence: true
   validates :url, format: URI.regexp(['http', 'https'])
 

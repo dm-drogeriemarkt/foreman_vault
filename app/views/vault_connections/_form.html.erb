@@ -1,6 +1,6 @@
 <%= form_for @vault_connection, url: (@vault_connection.new_record? ? vault_connections_path : vault_connection_path(id: @vault_connection)) do |f| %>
   <%= base_errors_for @vault_connection %>
-  <%= text_f f, :name, help_inline: _("Vault Connection name") %>
+  <%= text_f f, :name, disabled: @vault_connection.persisted?, help_inline: _("Vault Connection name") %>
   <%= text_f f, :url, help_inline: _("Vault Server url") %>
   <div class="auth_methods">
     <h4><%=_("Auth Methods")%></h4>
