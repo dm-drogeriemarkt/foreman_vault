@@ -12,10 +12,10 @@
     <div class="tab-content">
       <div class="tab-pane active" id="approle">
         <%= text_f f, :role_id, label: _("Role ID"), help_inline: _("Vault Connection Role ID") %>
-        <%= text_f f, :secret_id, label: _("Secret ID"), help_inline: _("Vault Connection Secret ID") %>
+        <%= password_f f, :secret_id, label: _("Secret ID"), help_inline: _("Vault Connection Secret ID") %>
       </div>
       <div class="tab-pane" id="token">
-        <%= text_f f, :token, help_inline: _("Vault Connection token") %>
+        <%= password_f f, :token, help_inline: _("Vault Connection token") %>
       </div>
     </div>
   </div>
