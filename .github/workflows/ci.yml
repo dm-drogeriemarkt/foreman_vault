@@ -8,7 +8,7 @@ jobs:
   rubocop:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        foreman-core-branch: [2.3-stable, 2.4-stable, 2.5-stable, 3.0-stable, 3.1-stable, 3.2-stable, 3.3-stable, develop]
+        foreman-core-branch: [3.1-stable, 3.2-stable, 3.3-stable, 3.4-stable, 3.5-stable, 3.6-stable, develop]
         ruby-version: [2.7]
         node-version: [14]
     steps:
@@ -39,18 +39,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install build-essential libcurl4-openssl-dev libvirt-dev ruby-libvirt zlib1g-dev libpq-dev
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
-          clean: false
           repository: theforeman/foreman
           ref: ${{ matrix.foreman-core-branch }}
-          fetch-depth: 0
-      - name: Apply patches for Foreman < 3.0
-        if: ${{ contains(fromJson('["2.3-stable", "2.4-stable", "2.5-stable"]'), matrix.foreman-core-branch) }}
-        run: |
-          git cherry-pick -n bad15051387b21563ffc0843a60f9dccfb2d3e17 # pin rdoc to use psych < 4.0.0
-          git cherry-pick -n f5a3dd2dedb569a0e6c5e8bb311c1da75906fc4f # use webpack-dev-server-without-h2
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           path: foreman_vault
       - name: Setup Ruby
@@ -58,7 +51,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby-version }}
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version:  ${{ matrix.node-version }}
       - name: Setup Bundler
@@ -69,7 +62,7 @@ jobs:
           echo "gem 'foreman_vault', path: './foreman_vault'" > bundler.d/foreman_vault.local.rb
           bundle lock --update
       - name: Cache gems
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
