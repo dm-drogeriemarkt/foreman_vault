@@ -69,14 +69,12 @@ module ForemanVault
     end
 
     config.to_prepare do
-      begin
-        ::Host::Managed.include(ForemanVault::HostExtensions)
-        ::ProvisioningTemplate.include(ForemanVault::ProvisioningTemplateExtensions)
-        ::Foreman::Renderer::Scope::Base.include(ForemanVault::Macros)
-        ::Foreman::Renderer.configure { |c| c.allowed_generic_helpers += [:vault_secret, :vault_issue_certificate] }
-      rescue StandardError => e
-        Rails.logger.warn "ForemanVault: skipping engine hook (#{e})"
-      end
+      ::Host::Managed.include(ForemanVault::HostExtensions)
+      ::ProvisioningTemplate.include(ForemanVault::ProvisioningTemplateExtensions)
+      ::Foreman::Renderer::Scope::Base.include(ForemanVault::Macros)
+      ::Foreman::Renderer.configure { |c| c.allowed_generic_helpers += [:vault_secret, :vault_issue_certificate] }
+    rescue StandardError => e
+      Rails.logger.warn "ForemanVault: skipping engine hook (#{e})"
     end
 
     initializer 'foreman_vault.register_gettext', after: :load_config_initializers do |_app|

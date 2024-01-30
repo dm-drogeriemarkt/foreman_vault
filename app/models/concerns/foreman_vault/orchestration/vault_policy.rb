@@ -33,7 +33,6 @@ module ForemanVault
                      action: [self, :del_vault])
       end
 
-      # rubocop:disable Metrics/AbcSize
       def set_vault
         logger.info "Pushing #{name} data to Vault"
 
@@ -44,7 +43,6 @@ module ForemanVault
         Foreman::Logging.exception("Failed to push #{name} data to Vault.", e)
         failure format(_('Failed to push %{name} data to Vault: %{message}\n '), name: name, message: e.message), e
       end
-      # rubocop:enable Metrics/AbcSize
 
       def del_vault
         logger.info "Clearing #{name} Vault data"

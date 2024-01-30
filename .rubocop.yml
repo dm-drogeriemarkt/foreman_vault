@@ -1,17 +1,30 @@
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.7
   TargetRailsVersion: 5.1
   Exclude:
     - 'Rakefile'
+    - 'node_modules/**/*'
+    - 'locale/*'
+    - 'vendor/**/*'
+
+require:
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-minitest
 
 Rails:
   Enabled: true
+
+Rails/RakeEnvironment:
+  Exclude:
+    - 'lib/tasks/foreman_vault/*.rake'
+    - 'lib/tasks/*.rake'
 
 # Don't enforce documentation
 Style/Documentation:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 190
 
 Metrics/ParameterLists:
@@ -41,3 +54,13 @@ Metrics/ClassLength:
 Naming/FileName:
   Exclude:
     - db/seeds.d/103-provisioning_templates.rb
+
+Layout/BlockAlignment:
+  Exclude:
+    - config/routes.rb
+    - db/seeds.d/*.rb
+    - test/factories/*.rb
+
+Gemspec/RequiredRubyVersion:
+  Exclude:
+    - 'foreman_vault.gemspec'

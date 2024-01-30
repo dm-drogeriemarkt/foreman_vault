@@ -13,13 +13,10 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
-      - name: Setup
-        run: |
-          gem install bundler
-          echo "gem 'rdoc', '< 6.4'" >> Gemfile
-          bundle install --jobs=3 --retry=3
+          bundler-cache: true
+          working-directory: .
       - name: Run rubocop
-        run: bundle exec rubocop
+        run: bundle exec rubocop --parallel
   test:
     runs-on: ubuntu-latest
     needs: rubocop

@@ -115,9 +115,9 @@ module ForemanVault
         let(:new_policy_name) { "#{new_owner}-#{host.name}".parameterize }
         let(:put_policy_request) do
           url = "#{vault_connection.url}/v1/sys/policy/#{new_policy_name}"
-          # rubocop:disable Metrics/LineLength
+          # rubocop:disable Layout/LineLength
           rules = "# allow access to secrets from puppet hosts from <foreman_owner>-<hostname>\npath \"secrets/data/MyOwner/#{host.name}/*\" {\n    capabilities = [\"create\", \"read\", \"update\"]\n}\n"
-          # rubocop:enable Metrics/LineLength
+          # rubocop:enable Layout/LineLength
           stub_request(:put, url).with(body: JSON.fast_generate(rules: rules)).to_return(status: 200)
         end
 

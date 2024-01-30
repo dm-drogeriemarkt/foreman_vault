@@ -22,7 +22,7 @@ class MacrosTest < ActiveSupport::TestCase
 
       subject = TestScope.new(host: host, source: source)
 
-      assert subject.respond_to?(:vault_secret)
+      assert_respond_to subject, :vault_secret
       assert_equal response.data, subject.vault_secret(vault_connection.name, secret_path)
     end
   end

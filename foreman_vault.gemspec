@@ -17,5 +17,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'vault', '~> 0.1'
 
   s.add_development_dependency 'rdoc'
-  s.add_development_dependency 'rubocop', '0.54.0'
+  s.add_development_dependency 'rubocop', '~> 0.93.0'
+  s.add_development_dependency 'rubocop-minitest', '~> 0.27.0'
+  s.add_development_dependency 'rubocop-performance', '~> 1.10.0'
+  s.add_development_dependency 'rubocop-rails', '~> 2.9.0'
 end
