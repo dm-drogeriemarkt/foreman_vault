@@ -15,7 +15,7 @@ jobs:
           ruby-version: 2.7
       - name: Setup
         run: |
-          gem install bundler
+          gem install bundler -v 2.4.22
           echo "gem 'rdoc', '< 6.4'" >> Gemfile
           bundle install --jobs=3 --retry=3
       - name: Run rubocop
@@ -56,7 +56,7 @@ jobs:
           node-version:  ${{ matrix.node-version }}
       - name: Setup Bundler
         run: |
-          gem install bundler
+          gem install bundler -v 2.4.22
           bundle config path vendor/bundle
           bundle config set without journald development console mysql2 sqlite
           echo "gem 'foreman_vault', path: './foreman_vault'" > bundler.d/foreman_vault.local.rb
