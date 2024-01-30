@@ -1,43 +1,24 @@
 AllCops:
-  TargetRubyVersion: 2.3
-  TargetRailsVersion: 5.1
-  Exclude:
-    - 'Rakefile'
+  TargetRubyVersion: 2.5
+  TargetRailsVersion: 6.0
 
-Rails:
-  Enabled: true
-
-# Don't enforce documentation
 Style/Documentation:
   Enabled: false
 
-Metrics/LineLength:
-  Max: 190
-
-Metrics/ParameterLists:
-  Max: 6
-
-Style/WordArray:
-  Enabled: false
-
-Style/SymbolArray:
-  Enabled: false
-
-Style/RegexpLiteral:
+Metrics:
   Enabled: false
 
 Style/FormatStringToken:
   Enabled: false
 
-Metrics/BlockLength:
-  Exclude:
-    - lib/foreman_vault/engine.rb
-    - 'test/**/*'
+Layout/LineLength:
+  Enabled: false
 
-Metrics/ClassLength:
-  Exclude:
-    - 'test/**/*'
+Lint/BooleanSymbol:
+  Enabled: false
 
-Naming/FileName:
-  Exclude:
-    - db/seeds.d/103-provisioning_templates.rb
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false

@@ -1,85 +1,23 @@
 name: CI
-on: [push, pull_request]
-env:
-  RAILS_ENV: test
-  DATABASE_URL: postgresql://postgres:@localhost/test
-  DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: true
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: ${{ github.ref_name }}-${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
   rubocop:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
-      - name: Setup
-        run: |
-          gem install bundler -v 2.4.22
-          echo "gem 'rdoc', '< 6.4'" >> Gemfile
-          bundle install --jobs=3 --retry=3
-      - name: Run rubocop
-        run: bundle exec rubocop
+    name: Rubocop
+    uses: theforeman/actions/.github/workflows/rubocop.yml@v0
+
   test:
-    runs-on: ubuntu-latest
+    name: Ruby
     needs: rubocop
-    services:
-      postgres:
-        image: postgres:12.1
-        ports: ['5432:5432']
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-    strategy:
-      fail-fast: false
-      matrix:
-        foreman-core-branch: [3.1-stable, 3.2-stable, 3.3-stable, 3.4-stable, 3.5-stable, 3.6-stable, develop]
-        ruby-version: [2.7]
-        node-version: [14]
-    steps:
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install build-essential libcurl4-openssl-dev libvirt-dev ruby-libvirt zlib1g-dev libpq-dev
-      - uses: actions/checkout@v3
-        with:
-          repository: theforeman/foreman
-          ref: ${{ matrix.foreman-core-branch }}
-      - uses: actions/checkout@v3
-        with:
-          path: foreman_vault
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby-version }}
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version:  ${{ matrix.node-version }}
-      - name: Setup Bundler
-        run: |
-          gem install bundler -v 2.4.22
-          bundle config path vendor/bundle
-          bundle config set without journald development console mysql2 sqlite
-          echo "gem 'foreman_vault', path: './foreman_vault'" > bundler.d/foreman_vault.local.rb
-          bundle lock --update
-      - name: Cache gems
-        uses: actions/cache@v3
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
-      - name: Setup Plugin
-        run: |
-          bundle install --jobs=3 --retry=3
-          bundle exec rake db:create
-          bundle exec rake db:migrate
-          npm install
-          bundle exec rake webpack:compile
-      - name: Run plugin tests
-        run: |
-          bundle exec rake test:foreman_vault
-          bundle exec rake test TEST="test/unit/foreman/access_permissions_test.rb"
-      - name: Precompile plugin assets
-        run: bundle exec rake 'plugin:assets:precompile[foreman_vault]'
-        env:
-          RAILS_ENV: production
+    uses: theforeman/actions/.github/workflows/foreman_plugin.yml@v0
+    with:
+      plugin: foreman_vault
