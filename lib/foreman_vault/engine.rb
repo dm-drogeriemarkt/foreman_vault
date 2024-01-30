@@ -12,14 +12,6 @@ module ForemanVault
     config.autoload_paths += Dir["#{config.root}/app/lib"]
     config.autoload_paths += Dir["#{config.root}/app/jobs"]
 
-    initializer 'foreman_vault.load_default_settings', before: :load_config_initializers do
-      require_dependency File.expand_path('../../app/models/setting/vault.rb', __dir__) if begin
-                                                                                             Setting.table_exists?
-                                                                                           rescue StandardError
-                                                                                             (false)
-                                                                                           end
-    end
-
     # Add any db migrations
     initializer 'foreman_vault.load_app_instance_data' do |app|
       ForemanVault::Engine.paths['db/migrate'].existent.each do |path|
@@ -29,7 +21,7 @@ module ForemanVault
 
     initializer 'foreman_vault.register_plugin', before: :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_vault do
-        requires_foreman '>= 2.3'
+        requires_foreman '>= 3.1'
 
         apipie_documented_controllers ["#{ForemanVault::Engine.root}/app/controllers/api/v2/*.rb"]
 
@@ -45,30 +37,27 @@ module ForemanVault
                                                     'api/v2/vault_connections': [:destroy] }, resource_type: 'VaultConnection'
         end
 
-        # New settings definition DSL is available from Foreman 3.0
-        if respond_to?(:settings)
-          settings do
-            category(:vault, N_('Vault')) do
-              setting('vault_connection',
-                      full_name: N_('Default Vault connection'),
-                      type: :string,
-                      description: N_('Default Vault Connection that can be override using parameters'),
-                      default: VaultConnection.table_exists? && VaultConnection.unscoped.count == 1 ? VaultConnection.unscoped.first.name : nil,
-                      collection: VaultConnection.table_exists? ? proc { Hash[VaultConnection.unscoped.all.map { |vc| [vc.name, vc.name] }] } : [],
-                      include_blank: _('Select Vault Connection'))
-              setting('vault_policy_template',
-                      full_name: N_('Vault Policy template name'),
-                      type: :string,
-                      description: N_('The name of the ProvisioningTemplate that will be used for Vault Policy'),
-                      default: ProvisioningTemplate.unscoped.of_kind(:VaultPolicy).find_by(name: 'Default Vault Policy')&.name,
-                      collection: proc { Hash[ProvisioningTemplate.unscoped.of_kind(:VaultPolicy).map { |tmpl| [tmpl.name, tmpl.name] }] },
-                      include_blank: _('Select Template'))
-              setting('vault_orchestration_enabled',
-                      full_name: N_('Vault Orchestration enabled'),
-                      type: :boolean,
-                      description: N_('Enable or disable the Vault orchestration step for managing policies and auth methods'),
-                      default: false)
-            end
+        settings do
+          category(:vault, N_('Vault')) do
+            setting('vault_connection',
+                    full_name: N_('Default Vault connection'),
+                    type: :string,
+                    description: N_('Default Vault Connection that can be override using parameters'),
+                    default: VaultConnection.table_exists? && VaultConnection.unscoped.count == 1 ? VaultConnection.unscoped.first.name : nil,
+                    collection: VaultConnection.table_exists? ? proc { Hash[VaultConnection.unscoped.all.map { |vc| [vc.name, vc.name] }] } : [],
+                    include_blank: _('Select Vault Connection'))
+            setting('vault_policy_template',
+                    full_name: N_('Vault Policy template name'),
+                    type: :string,
+                    description: N_('The name of the ProvisioningTemplate that will be used for Vault Policy'),
+                    default: ProvisioningTemplate.unscoped.of_kind(:VaultPolicy).find_by(name: 'Default Vault Policy')&.name,
+                    collection: proc { Hash[ProvisioningTemplate.unscoped.of_kind(:VaultPolicy).map { |tmpl| [tmpl.name, tmpl.name] }] },
+                    include_blank: _('Select Template'))
+            setting('vault_orchestration_enabled',
+                    full_name: N_('Vault Orchestration enabled'),
+                    type: :boolean,
+                    description: N_('Enable or disable the Vault orchestration step for managing policies and auth methods'),
+                    default: false)
           end
         end
 
