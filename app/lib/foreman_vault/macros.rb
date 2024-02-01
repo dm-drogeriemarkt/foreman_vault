@@ -14,6 +14,7 @@ module ForemanVault
     def vault_issue_certificate(vault_connection_name, secret_path, *options)
       vault = VaultConnection.find_by!(name: vault_connection_name)
       raise VaultError.new(N_('Invalid token for %s'), vault.name) if vault.with_token? && !vault.token_valid?
+
       vault.issue_certificate(secret_path, *options)
     rescue ActiveRecord::RecordNotFound => e
       raise VaultError, e.message

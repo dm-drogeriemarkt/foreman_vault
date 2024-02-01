@@ -6,7 +6,7 @@ module Api
       include Api::Version2
       include ForemanVault::Controller::Parameters::VaultConnection
 
-      before_action :find_resource, only: [:show, :update, :destroy]
+      before_action :find_resource, only: %i[show update destroy]
 
       api :GET, '/vault_connections/', N_('List VaultConnections')
       param_group :search_and_pagination, ::Api::V2::BaseController

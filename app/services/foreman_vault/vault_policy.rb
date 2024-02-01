@@ -37,6 +37,7 @@ module ForemanVault
     private
 
     attr_reader :host
+
     delegate :params, :render_template, :vault_connection, to: :host
     delegate :policy, :policies, :put_policy, :delete_policy, to: :vault_connection
 
