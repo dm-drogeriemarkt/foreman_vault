@@ -18,6 +18,18 @@ jobs:
   test:
     name: Ruby
     needs: rubocop
+    strategy:
+      fail-fast: false
+      matrix:
+        foreman:
+          - 3.4-stable
+          - 3.5-stable
+          - 3.6-stable
+          - 3.7-stable
+          - 3.8-stable
+          - 3.9-stable
+          - develop
     uses: theforeman/actions/.github/workflows/foreman_plugin.yml@v0
     with:
       plugin: foreman_vault
+      foreman_version: ${{ matrix.foreman }}
