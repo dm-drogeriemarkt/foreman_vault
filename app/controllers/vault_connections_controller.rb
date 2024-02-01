@@ -3,7 +3,7 @@
 class VaultConnectionsController < ::ApplicationController
   include ForemanVault::Controller::Parameters::VaultConnection
 
-  before_action :find_resource, only: [:edit, :update, :destroy]
+  before_action :find_resource, only: %i[edit update destroy]
 
   def index
     @vault_connections = resource_base.all

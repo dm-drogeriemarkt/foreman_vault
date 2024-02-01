@@ -33,7 +33,6 @@ module ForemanVault
                      action: [self, :del_vault])
       end
 
-      # rubocop:disable Metrics/AbcSize
       def set_vault
         logger.info "Pushing #{name} data to Vault"
 

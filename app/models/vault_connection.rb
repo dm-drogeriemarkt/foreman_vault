@@ -7,7 +7,7 @@ class VaultConnection < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :name, inclusion: { in: ->(i) { [i.name_was] }, message: _('cannot be changed after creation') }, on: :update
   validates :url, presence: true
-  validates :url, format: URI.regexp(['http', 'https'])
+  validates :url, format: URI::DEFAULT_PARSER.make_regexp(%w[http https])
 
   validates :token, presence: true, if: -> { role_id.nil? || secret_id.nil? }
   validates :token, inclusion: { in: [nil], message: _('AppRole or token must be blank') }, unless: -> { role_id.nil? || secret_id.nil? }
@@ -48,9 +48,7 @@ class VaultConnection < ApplicationRecord
     client.renew_token
     save!
   rescue StandardError => e
-    # rubocop:disable Rails/SkipsModelValidations
     update_column(:vault_error, e.message)
-    # rubocop:enable Rails/SkipsModelValidations
   end
 
   def perform_renew_token
@@ -76,7 +74,7 @@ class VaultConnection < ApplicationRecord
   end
 
   def normalize_blank_values
-    attributes.each do |column, _value|
+    attributes.each_key do |column|
       self[column].present? || self[column] = nil
     end
   end

@@ -27,11 +27,11 @@ module ForemanVault
 
         # Add permissions
         security_block :foreman_vault do
-          permission :view_vault_connections,     { vault_connections: [:index, :show],
-                                                    'api/v2/vault_connections': [:index, :show] }, resource_type: 'VaultConnection'
-          permission :create_vault_connections,   { vault_connections: [:new, :create],
+          permission :view_vault_connections,     { vault_connections: %i[index show],
+                                                    'api/v2/vault_connections': %i[index show] }, resource_type: 'VaultConnection'
+          permission :create_vault_connections,   { vault_connections: %i[new create],
                                                     'api/v2/vault_connections': [:create] }, resource_type: 'VaultConnection'
-          permission :edit_vault_connections,     { vault_connections: [:edit, :update],
+          permission :edit_vault_connections,     { vault_connections: %i[edit update],
                                                     'api/v2/vault_connections': [:update] }, resource_type: 'VaultConnection'
           permission :destroy_vault_connections,  { vault_connections: [:destroy],
                                                     'api/v2/vault_connections': [:destroy] }, resource_type: 'VaultConnection'
@@ -69,14 +69,12 @@ module ForemanVault
     end
 
     config.to_prepare do
-      begin
-        ::Host::Managed.include(ForemanVault::HostExtensions)
-        ::ProvisioningTemplate.include(ForemanVault::ProvisioningTemplateExtensions)
-        ::Foreman::Renderer::Scope::Base.include(ForemanVault::Macros)
-        ::Foreman::Renderer.configure { |c| c.allowed_generic_helpers += [:vault_secret, :vault_issue_certificate] }
-      rescue StandardError => e
-        Rails.logger.warn "ForemanVault: skipping engine hook (#{e})"
-      end
+      ::Host::Managed.include(ForemanVault::HostExtensions)
+      ::ProvisioningTemplate.include(ForemanVault::ProvisioningTemplateExtensions)
+      ::Foreman::Renderer::Scope::Base.include(ForemanVault::Macros)
+      ::Foreman::Renderer.configure { |c| c.allowed_generic_helpers += %i[vault_secret vault_issue_certificate] }
+    rescue StandardError => e
+      Rails.logger.warn "ForemanVault: skipping engine hook (#{e})"
     end
 
     initializer 'foreman_vault.register_gettext', after: :load_config_initializers do |_app|
