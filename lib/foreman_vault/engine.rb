@@ -40,24 +40,24 @@ module ForemanVault
         settings do
           category(:vault, N_('Vault')) do
             setting('vault_connection',
-                    full_name: N_('Default Vault connection'),
-                    type: :string,
-                    description: N_('Default Vault Connection that can be override using parameters'),
-                    default: VaultConnection.table_exists? && VaultConnection.unscoped.count == 1 ? VaultConnection.unscoped.first.name : nil,
-                    collection: VaultConnection.table_exists? ? proc { Hash[VaultConnection.unscoped.all.map { |vc| [vc.name, vc.name] }] } : [],
-                    include_blank: _('Select Vault Connection'))
+              full_name: N_('Default Vault connection'),
+              type: :string,
+              description: N_('Default Vault Connection that can be override using parameters'),
+              default: VaultConnection.table_exists? && VaultConnection.unscoped.count == 1 ? VaultConnection.unscoped.first.name : nil,
+              collection: VaultConnection.table_exists? ? proc { Hash[VaultConnection.unscoped.all.map { |vc| [vc.name, vc.name] }] } : [],
+              include_blank: _('Select Vault Connection'))
             setting('vault_policy_template',
-                    full_name: N_('Vault Policy template name'),
-                    type: :string,
-                    description: N_('The name of the ProvisioningTemplate that will be used for Vault Policy'),
-                    default: ProvisioningTemplate.unscoped.of_kind(:VaultPolicy).find_by(name: 'Default Vault Policy')&.name,
-                    collection: proc { Hash[ProvisioningTemplate.unscoped.of_kind(:VaultPolicy).map { |tmpl| [tmpl.name, tmpl.name] }] },
-                    include_blank: _('Select Template'))
+              full_name: N_('Vault Policy template name'),
+              type: :string,
+              description: N_('The name of the ProvisioningTemplate that will be used for Vault Policy'),
+              default: ProvisioningTemplate.unscoped.of_kind(:VaultPolicy).find_by(name: 'Default Vault Policy')&.name,
+              collection: proc { Hash[ProvisioningTemplate.unscoped.of_kind(:VaultPolicy).map { |tmpl| [tmpl.name, tmpl.name] }] },
+              include_blank: _('Select Template'))
             setting('vault_orchestration_enabled',
-                    full_name: N_('Vault Orchestration enabled'),
-                    type: :boolean,
-                    description: N_('Enable or disable the Vault orchestration step for managing policies and auth methods'),
-                    default: false)
+              full_name: N_('Vault Orchestration enabled'),
+              type: :boolean,
+              description: N_('Enable or disable the Vault orchestration step for managing policies and auth methods'),
+              default: false)
           end
         end
 
@@ -69,14 +69,12 @@ module ForemanVault
     end
 
     config.to_prepare do
-      begin
-        ::Host::Managed.include(ForemanVault::HostExtensions)
-        ::ProvisioningTemplate.include(ForemanVault::ProvisioningTemplateExtensions)
-        ::Foreman::Renderer::Scope::Base.include(ForemanVault::Macros)
-        ::Foreman::Renderer.configure { |c| c.allowed_generic_helpers += [:vault_secret, :vault_issue_certificate] }
-      rescue StandardError => e
-        Rails.logger.warn "ForemanVault: skipping engine hook (#{e})"
-      end
+      ::Host::Managed.include(ForemanVault::HostExtensions)
+      ::ProvisioningTemplate.include(ForemanVault::ProvisioningTemplateExtensions)
+      ::Foreman::Renderer::Scope::Base.include(ForemanVault::Macros)
+      ::Foreman::Renderer.configure { |c| c.allowed_generic_helpers += [:vault_secret, :vault_issue_certificate] }
+    rescue StandardError => e
+      Rails.logger.warn "ForemanVault: skipping engine hook (#{e})"
     end
 
     initializer 'foreman_vault.register_gettext', after: :load_config_initializers do |_app|

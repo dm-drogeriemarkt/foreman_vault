@@ -21,7 +21,7 @@ module ForemanVault
         return unless vault_auth_method.valid?
 
         queue.create(name: _('Push %s data to Vault') % self, priority: 100,
-                     action: [self, :set_vault])
+          action: [self, :set_vault])
       end
 
       def queue_vault_destroy
@@ -30,10 +30,9 @@ module ForemanVault
         return unless vault_auth_method.valid?
 
         queue.create(name: _('Clear %s Vault data') % self, priority: 60,
-                     action: [self, :del_vault])
+          action: [self, :del_vault])
       end
 
-      # rubocop:disable Metrics/AbcSize
       def set_vault
         logger.info "Pushing #{name} data to Vault"
 
@@ -44,7 +43,6 @@ module ForemanVault
         Foreman::Logging.exception("Failed to push #{name} data to Vault.", e)
         failure format(_('Failed to push %{name} data to Vault: %{message}\n '), name: name, message: e.message), e
       end
-      # rubocop:enable Metrics/AbcSize
 
       def del_vault
         logger.info "Clearing #{name} Vault data"

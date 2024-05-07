@@ -59,9 +59,11 @@ class VaultAuthMethodTest < ActiveSupport::TestCase
 
         subject.expects(:set_certificate).once.with(
           'name',
-          certificate: 'cert',
-          token_policies: 'vault_policy_name',
-          allowed_common_names: [host.fqdn]
+          {
+            certificate: 'cert',
+            token_policies: 'vault_policy_name',
+            allowed_common_names: [host.fqdn],
+          }
         )
         subject.save
       end

@@ -23,15 +23,15 @@ class VaultClientTest < ActiveSupport::TestCase
       stub_request(:post, "#{base_url}/v1/auth/approle/login").with(
         body: {
           role_id: role_id,
-          secret_id: secret_id
+          secret_id: secret_id,
         }
       ).to_return(
         status: 200,
         headers: { 'Content-Type': 'application/json' },
         body: {
           auth: {
-            client_token: token
-          }
+            client_token: token,
+          },
         }.to_json
       )
     end
@@ -82,7 +82,7 @@ class VaultClientTest < ActiveSupport::TestCase
         issuing_ca: 'CA_CERTIFICATE_DATA',
         private_key: 'PRIVATE_KEY_DATA',
         private_key_type: 'rsa',
-        serial_number: '7e:2d:c8:dd:df:da:fe:1f:39:da:39:23:4f:74:c8:1f:1d:4a:db:a7'
+        serial_number: '7e:2d:c8:dd:df:da:fe:1f:39:da:39:23:4f:74:c8:1f:1d:4a:db:a7',
       }
 
       response = OpenStruct.new(data: @data)

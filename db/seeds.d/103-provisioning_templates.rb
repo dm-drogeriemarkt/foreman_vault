@@ -5,8 +5,8 @@ User.as_anonymous_admin do
     {
       name: 'Default Vault Policy',
       source: 'VaultPolicy/default.erb',
-      template_kind: TemplateKind.find_or_create_by(name: 'VaultPolicy')
-    }
+      template_kind: TemplateKind.find_or_create_by(name: 'VaultPolicy'),
+    },
   ]
 
   templates.each do |template|

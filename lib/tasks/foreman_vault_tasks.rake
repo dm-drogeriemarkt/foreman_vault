@@ -11,16 +11,14 @@ namespace :foreman_vault do # rubocop:disable Metrics/BlockLength
         hosts = Host::Managed.where(managed: true)
 
         hosts.each_with_index do |host, index|
-          begin
-            result = host.reload.vault_auth_method.save
-            if result
-              puts "[#{index + 1}/#{hosts.count}] Auth-Method of \"#{host.name}\" pushed to Vault server \"#{host.vault_connection.url}\""
-            else
-              puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{result}"
-            end
-          rescue StandardError => err
-            puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{err}"
+          result = host.reload.vault_auth_method.save
+          if result
+            puts "[#{index + 1}/#{hosts.count}] Auth-Method of \"#{host.name}\" pushed to Vault server \"#{host.vault_connection.url}\""
+          else
+            puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{result}"
           end
+        rescue StandardError => e
+          puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{e}"
         end
       end
     end
@@ -33,16 +31,14 @@ namespace :foreman_vault do # rubocop:disable Metrics/BlockLength
         hosts = Host::Managed.where(managed: true)
 
         hosts.each_with_index do |host, index|
-          begin
-            result = host.reload.vault_policy.save
-            if result
-              puts "[#{index + 1}/#{hosts.count}] Policy of \"#{host.name}\" pushed to Vault server \"#{host.vault_connection.url}\""
-            else
-              puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{result}"
-            end
-          rescue StandardError => err
-            puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{err}"
+          result = host.reload.vault_policy.save
+          if result
+            puts "[#{index + 1}/#{hosts.count}] Policy of \"#{host.name}\" pushed to Vault server \"#{host.vault_connection.url}\""
+          else
+            puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{result}"
           end
+        rescue StandardError => e
+          puts "[#{index + 1}/#{hosts.count}] Failed to push \"#{host.name}\": #{e}"
         end
       end
     end
@@ -61,25 +57,4 @@ namespace :test do
   end
 end
 
-namespace :foreman_vault do
-  task :rubocop do
-    begin
-      require 'rubocop/rake_task'
-      RuboCop::RakeTask.new(:rubocop_foreman_vault) do |task|
-        task.patterns = ["#{ForemanVault::Engine.root}/app/**/*.rb",
-                         "#{ForemanVault::Engine.root}/lib/**/*.rb",
-                         "#{ForemanVault::Engine.root}/test/**/*.rb"]
-      end
-    rescue StandardError
-      puts 'Rubocop not loaded.'
-    end
-
-    Rake::Task['rubocop_foreman_vault'].invoke
-  end
-end
-
 Rake::Task[:test].enhance ['test:foreman_vault']
-
-load 'tasks/jenkins.rake'
-
-Rake::Task['jenkins:unit'].enhance ['test:foreman_vault', 'foreman_vault:rubocop'] if Rake::Task.task_defined?(:'jenkins:unit')
