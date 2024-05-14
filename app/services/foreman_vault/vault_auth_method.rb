@@ -31,6 +31,7 @@ module ForemanVault
     private
 
     attr_reader :host
+
     delegate :vault_policy, :vault_connection, :fqdn, to: :host
     delegate :name, to: :vault_policy, prefix: true
     delegate :set_certificate, :delete_certificate, to: :vault_connection
@@ -39,7 +40,7 @@ module ForemanVault
       {
         certificate: certificate,
         token_policies: vault_policy_name,
-        allowed_common_names: allowed_common_names
+        allowed_common_names: allowed_common_names,
       }
     end
 

@@ -7,7 +7,7 @@ class VaultConnection < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :name, inclusion: { in: ->(i) { [i.name_was] }, message: _('cannot be changed after creation') }, on: :update
   validates :url, presence: true
-  validates :url, format: URI.regexp(['http', 'https'])
+  validates :url, format: URI::DEFAULT_PARSER.make_regexp(['http', 'https'])
 
   validates :token, presence: true, if: -> { role_id.nil? || secret_id.nil? }
   validates :token, inclusion: { in: [nil], message: _('AppRole or token must be blank') }, unless: -> { role_id.nil? || secret_id.nil? }
@@ -25,8 +25,8 @@ class VaultConnection < ApplicationRecord
   scope :with_valid_token, -> { with_token.where(vault_error: nil).where('expire_time > ?', Time.zone.now) }
 
   delegate :fetch_expire_time, :fetch_secret, :issue_certificate,
-           :policy, :policies, :put_policy, :delete_policy,
-           :set_certificate, :certificates, :delete_certificate, to: :client
+    :policy, :policies, :put_policy, :delete_policy,
+    :set_certificate, :certificates, :delete_certificate, to: :client
 
   def with_token?
     token.present?

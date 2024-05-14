@@ -22,7 +22,8 @@ class VaultConnectionsController < ::ApplicationController
     end
   end
 
-  def edit; end
+  def edit
+  end
 
   def update
     if @vault_connection.update(vault_connection_params)

@@ -1,8 +1,6 @@
-AllCops:
-  TargetRubyVersion: 2.3
-  TargetRailsVersion: 5.1
-  Exclude:
-    - 'Rakefile'
+inherit_gem:
+  theforeman-rubocop:
+    - default.yml
 
 Rails:
   Enabled: true
@@ -11,7 +9,7 @@ Rails:
 Style/Documentation:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 190
 
 Metrics/ParameterLists:
@@ -33,6 +31,10 @@ Metrics/BlockLength:
   Exclude:
     - lib/foreman_vault/engine.rb
     - 'test/**/*'
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - Rakefile
 
 Metrics/ClassLength:
   Exclude:

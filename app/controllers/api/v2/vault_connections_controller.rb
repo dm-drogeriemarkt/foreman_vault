@@ -16,7 +16,8 @@ module Api
 
       api :GET, '/vault_connections/:id', N_('Show VaultConnection details')
       param :id, :identifier, required: true
-      def show; end
+      def show
+      end
 
       def_param_group :vault_connection do
         param :vault_connection, Hash, action_aware: true, required: true do
