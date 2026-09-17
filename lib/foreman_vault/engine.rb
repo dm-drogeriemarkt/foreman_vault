@@ -54,6 +54,11 @@ module ForemanVault
                 type: :boolean,
                 description: N_('Enable or disable the Vault orchestration step for managing policies and auth methods'),
                 default: false)
+              setting('vault_cronjobs_enabled',
+                full_name: N_('Vault Cronjobs enabled'),
+                type: :boolean,
+                description: N_('Enable or disable the hourly Vault Cronjobs for managing policies and auth methods'),
+                default: false)
             end
           end
 
