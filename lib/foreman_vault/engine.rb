@@ -15,8 +15,9 @@ module ForemanVault
 
     initializer 'foreman_vault.register_plugin', before: :finisher_hook do |app|
       app.reloader.to_prepare do
+        require 'foreman/cron'
         Foreman::Plugin.register :foreman_vault do
-          requires_foreman '>= 3.13'
+          requires_foreman '>= 3.19'
 
           apipie_documented_controllers ["#{ForemanVault::Engine.root}/app/controllers/api/v2/*.rb"]
 
@@ -53,6 +54,11 @@ module ForemanVault
                 type: :boolean,
                 description: N_('Enable or disable the Vault orchestration step for managing policies and auth methods'),
                 default: false)
+              setting('vault_cronjobs_enabled',
+                full_name: N_('Vault Cronjobs enabled'),
+                type: :boolean,
+                description: N_('Enable or disable the hourly Vault Cronjobs for managing policies and auth methods'),
+                default: false)
             end
           end
 
@@ -60,6 +66,10 @@ module ForemanVault
           menu :top_menu, :vault_connections, url_hash: { controller: :vault_connections, action: :index },
                                               caption: N_('Vault Connections'),
                                               parent: :infrastructure_menu
+
+          # Register recurring task with Foreman::Cron framework
+          Foreman::Cron.register(:hourly, 'foreman_vault:policies:push')
+          Foreman::Cron.register(:hourly, 'foreman_vault:auth_methods:push')
         end
       end
     end

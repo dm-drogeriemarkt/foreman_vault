@@ -8,6 +8,7 @@ namespace :foreman_vault do # rubocop:disable Metrics/BlockLength
     desc 'Push auth methods for all hosts to Vault'
     task push: :environment do
       User.as_anonymous_admin do
+        next unless Setting['vault_cronjobs_enabled']
         hosts = Host::Managed.where(managed: true)
 
         hosts.each_with_index do |host, index|
@@ -28,6 +29,7 @@ namespace :foreman_vault do # rubocop:disable Metrics/BlockLength
     desc 'Push policies for all hosts to Vault'
     task push: :environment do
       User.as_anonymous_admin do
+        next unless Setting['vault_cronjobs_enabled']
         hosts = Host::Managed.where(managed: true)
 
         hosts.each_with_index do |host, index|

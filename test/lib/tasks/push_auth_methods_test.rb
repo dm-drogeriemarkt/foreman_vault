@@ -18,6 +18,8 @@ module ForemanVault
 
       FactoryBot.create(:parameter, name: 'vault_connection', value: vault_connection.name)
 
+      Setting[:vault_cronjobs_enabled] = true
+
       ForemanVault::VaultAuthMethod.any_instance.stubs(:vault_policy_name).returns('vault_policy_name')
       ForemanVault::VaultAuthMethod.any_instance.stubs(:certificate).returns('cert')
 
@@ -44,6 +46,17 @@ module ForemanVault
       end
 
       assert_match("[1/1] Failed to push \"#{host.name}\"", stdout)
+    end
+
+    it 'does not push auth methods when cronjobs are disabled' do
+      Setting[:vault_cronjobs_enabled] = false
+      host
+
+      stdout, _stderr = capture_io do
+        Rake::Task[TASK_NAME].invoke
+      end
+
+      assert_empty stdout
     end
   end
 end

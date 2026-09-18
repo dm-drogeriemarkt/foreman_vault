@@ -22,6 +22,7 @@ This allows Foreman to create everything needed to access Hashicorp Vault direct
 
 | Foreman Version | Plugin Version |
 | --------------- | -------------- |
+| >= 3.19         | ~> 4.0         |
 | >= 3.13         | ~> 3.0         |
 | >= 3.9          | ~> 2.0         |
 | >= 2.3          | ~> 1.0         |
